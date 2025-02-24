@@ -16,6 +16,7 @@ Rede social de pequenos fatos sobre qualquer coisa, onde é possível postar ape
 - RF006: O sistema deve permitir o "downvote" (voto negativo) do fato.
 - RF007: O sistema deve deletar o fato caso a contagem de votos esteja em 8 negativo.
 - RF008: O sistema deve permitir o cadastro de Display Name do usuário.
+- RF009: O sistema deve permitir o usuário não cadastrado apenas visualizar os fatos.
 
 ## Requisitos não funcionais
 
@@ -27,5 +28,9 @@ Rede social de pequenos fatos sobre qualquer coisa, onde é possível postar ape
 
 ## Atividades
 
-- CRUD da tabela de usuários, será possível alterar Display Name.
-- CRUD (apenas Create, Read e Delete) da tabela de fatos.
+- (BACK) CRUD da tabela de usuários, será possível alterar Display Name.
+- (BACK) CRUD (apenas Create, Read e Delete) da tabela de fatos.
+- (FRONT) Criar página de login.
+- (FRONT) Criar página com scroll infinito para os fatos.
+- (FRONT) Criar página de editar Display Name.
+- (FRONT) Criar página de criar fato.
