@@ -12,8 +12,8 @@ Rede social de pequenos fatos sobre qualquer coisa, onde é possível postar ape
 - RF002: O sistema deve permitir o login do usuário pelo provedor GitHub.
 - RF003: O sistema deve permitir o login do usuário pelo provedor Discord.
 - RF004: O sistema deve permitir a publicação de apenas 3 fatos diariamente por usuário.
-- RF005: O sistema deve permitir o "upvote" (voto positivo) do fato.
-- RF006: O sistema deve permitir o "downvote" (voto negativo) do fato.
+- RF005: O sistema deve permitir a curtida (voto positivo) do fato.
+- RF006: O sistema deve permitir o "it's fake!" (voto negativo) do fato.
 - RF007: O sistema deve deletar o fato caso a contagem de votos esteja em 8 negativo.
 - RF008: O sistema deve permitir o cadastro de Display Name do usuário.
 - RF009: O sistema deve permitir o usuário não cadastrado apenas visualizar os fatos.
