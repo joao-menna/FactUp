@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      - POSTGRES_DB=factup
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - factup_postgres:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./packages/backend
+      dockerfile: Dockerfile
+    environment:
+      - BACKEND_POSTGRES_CONNECTION_URL=postgresql://postgres:postgres@postgres:5432/factup
+    ports:
+      - 8080:8080
+
+volumes:
+  factup_postgres:
