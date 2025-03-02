@@ -2,9 +2,11 @@ version: "2"
 sql:
   - engine: "postgresql"
     queries: "query.sql"
-    schema: "schema.sql"
+    schema: "../migrator/migrations"
     gen:
       go:
         package: "orm"
         out: "orm"
         sql_package: "pgx/v5"
+        emit_json_tags: true
+        json_tags_case_style: "camel"

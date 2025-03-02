@@ -8,5 +8,5 @@ import (
 func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
 	r := g.Group("api/v1/user")
 
-	r.GET("", func(c *gin.Context) { GetUserByIdHandler(c, dbPool) })
+	r.GET(":id", func(c *gin.Context) { findUserByIdHandler(c, dbPool) })
 }

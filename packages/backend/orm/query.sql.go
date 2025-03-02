@@ -45,6 +45,24 @@ func (q *Queries) GetUserById(ctx context.Context, id int32) (User, error) {
 	return i, err
 }
 
+const insertUser = `-- name: InsertUser :one
+INSERT INTO "user" (email, display_name)
+VALUES ($1, $2)
+RETURNING id, email, display_name
+`
+
+type InsertUserParams struct {
+	Email       string `json:"email"`
+	DisplayName string `json:"displayName"`
+}
+
+func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, insertUser, arg.Email, arg.DisplayName)
+	var i User
+	err := row.Scan(&i.ID, &i.Email, &i.DisplayName)
+	return i, err
+}
+
 const listUsers = `-- name: ListUsers :many
 SELECT id, email, display_name FROM "user"
 `

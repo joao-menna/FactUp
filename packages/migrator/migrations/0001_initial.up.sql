@@ -27,14 +27,14 @@ CREATE TABLE "user_interaction" (
 );
 
 CREATE UNIQUE INDEX "user_interaction_index_0"
-ON "user_interaction" ("post_id", "user_id", "score");
+ON "user_interaction" ("post_id", "user_id");
 
-ALTER TABLE "user"
-ADD FOREIGN KEY("id") REFERENCES "post"("user_id")
-ON UPDATE NO ACTION ON DELETE CASCADE;
 ALTER TABLE "post"
-ADD FOREIGN KEY("id") REFERENCES "user_interaction"("post_id")
+ADD FOREIGN KEY("user_id") REFERENCES "user"("id")
+ON UPDATE NO ACTION ON DELETE CASCADE;
+ALTER TABLE "user_interaction"
+ADD FOREIGN KEY("post_id") REFERENCES "post"("id")
 ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE "user"
-ADD FOREIGN KEY("id") REFERENCES "user_interaction"("user_id")
-ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE "user_interaction"
+ADD FOREIGN KEY("user_id") REFERENCES "user"("id")
+ON UPDATE NO ACTION ON DELETE CASCADE;

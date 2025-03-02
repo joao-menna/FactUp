@@ -1,23 +1,76 @@
 services:
+  proxy:
+    image: nginx:latest
+    restart: on-failure
+    ports:
+      - 80:80
+    volumes:
+      - ./docker/proxy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - factup_network
+    depends_on:
+      backend:
+        condition: service_started
+
+
+
   postgres:
     image: postgres:17
+    restart: on-failure
     environment:
       - POSTGRES_DB=factup
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 10s
     ports:
       - 5432:5432
     volumes:
       - factup_postgres:/var/lib/postgresql/data
+    networks:
+      - factup_network
+
+
+
+  migrator:
+    build:
+      context: ./packages/migrator
+      dockerfile: Dockerfile
+    environment:
+      - MIGRATOR_POSTGRES_CONNECTION_URL=postgresql://postgres:postgres@postgres:5432/factup?sslmode=disable
+    volumes:
+      - ./packages/migrator/migrations:/app/migrations:ro
+    networks:
+      - factup_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
 
   backend:
     build:
       context: ./packages/backend
       dockerfile: Dockerfile
     environment:
-      - BACKEND_POSTGRES_CONNECTION_URL=postgresql://postgres:postgres@postgres:5432/factup
+      - BACKEND_POSTGRES_CONNECTION_URL=postgresql://postgres:postgres@postgres:5432/factup?sslmode=disable
+    env_file:
+      - .env
     ports:
       - 8080:8080
+    networks:
+      - factup_network
+
+
+
+networks:
+  factup_network:
+
+
 
 volumes:
   factup_postgres:

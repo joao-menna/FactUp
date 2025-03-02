@@ -4,7 +4,6 @@ import (
 	"backend/internal/user"
 	"backend/internal/utils"
 	"context"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -12,7 +11,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	dbPool, err := pgxpool.New(ctx, os.Getenv("BACKEND_POSTGRES_CONNECTION_URL"))
+	dbPool, err := pgxpool.New(ctx, utils.GetBackendPostgresConnectionUrl())
 	utils.CheckError(err)
 	defer dbPool.Close()
 

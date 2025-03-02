@@ -9,22 +9,22 @@ import (
 )
 
 type Post struct {
-	ID        int32
-	UserID    int32
-	Body      string
-	Source    pgtype.Text
-	ImagePath pgtype.Text
+	ID        int32       `json:"id"`
+	UserID    int32       `json:"userId"`
+	Body      string      `json:"body"`
+	Source    pgtype.Text `json:"source"`
+	ImagePath pgtype.Text `json:"imagePath"`
 }
 
 type User struct {
-	ID          int32
-	Email       string
-	DisplayName string
+	ID          int32  `json:"id"`
+	Email       string `json:"email"`
+	DisplayName string `json:"displayName"`
 }
 
 type UserInteraction struct {
-	ID     int32
-	PostID int32
-	UserID int32
-	Score  int16
+	ID     int32 `json:"id"`
+	PostID int32 `json:"postId"`
+	UserID int32 `json:"userId"`
+	Score  int16 `json:"score"`
 }
