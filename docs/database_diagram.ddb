@@ -1,7 +1,4 @@
 {
-  "author": "Unnamed",
-  "title": "Untitled Diagram",
-  "date": "2025-03-01T18:32:27.592Z",
   "tables": [
     {
       "id": 0,
@@ -38,7 +35,7 @@
           "values": []
         },
         {
-          "name": "displayName",
+          "name": "display_name",
           "type": "TEXT",
           "default": "",
           "check": "",
@@ -219,8 +216,7 @@
           "unique": true,
           "fields": [
             "post_id",
-            "user_id",
-            "score"
+            "user_id"
           ]
         }
       ],
@@ -230,36 +226,36 @@
   ],
   "relationships": [
     {
-      "startTableId": 0,
-      "startFieldId": 0,
-      "endTableId": 1,
-      "endFieldId": 1,
-      "cardinality": "one_to_many",
+      "startTableId": 1,
+      "startFieldId": 1,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
       "updateConstraint": "No action",
       "deleteConstraint": "Cascade",
-      "name": "fk_user_id_post",
+      "name": "fk_post_user_id_user",
       "id": 0
     },
     {
-      "startTableId": 1,
-      "startFieldId": 0,
-      "endTableId": 2,
-      "endFieldId": 1,
-      "cardinality": "one_to_many",
+      "startTableId": 2,
+      "startFieldId": 1,
+      "endTableId": 1,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
-      "name": "fk_post_id_user_interaction",
+      "name": "fk_user_interaction_post_id_post",
       "id": 1
     },
     {
-      "startTableId": 0,
-      "startFieldId": 0,
-      "endTableId": 2,
-      "endFieldId": 2,
-      "cardinality": "one_to_many",
+      "startTableId": 2,
+      "startFieldId": 2,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
       "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "fk_user_id_user_interaction",
+      "deleteConstraint": "Cascade",
+      "name": "fk_user_interaction_user_id_user",
       "id": 2
     }
   ],
@@ -267,5 +263,6 @@
   "subjectAreas": [],
   "database": "postgresql",
   "types": [],
-  "enums": []
+  "enums": [],
+  "title": "database_diagram"
 }
