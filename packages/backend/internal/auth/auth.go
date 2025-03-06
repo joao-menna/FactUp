@@ -22,12 +22,14 @@ const (
 )
 
 func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
+	ep := utils.NewDefaultEnvironmentProvider()
+
 	goth.UseProviders(
-		discord.New(utils.GetProviderClientId(discordProvider), utils.GetProviderClientSecret(discordProvider), utils.GetProviderCallbackUrl(discordProvider)),
-		github.New(utils.GetProviderClientId(githubProvider), utils.GetProviderClientSecret(githubProvider), utils.GetProviderCallbackUrl(githubProvider)),
-		google.New(utils.GetProviderClientId(googleProvider), utils.GetProviderClientSecret(googleProvider), utils.GetProviderCallbackUrl(googleProvider)),
-		facebook.New(utils.GetProviderClientId(facebookProvider), utils.GetProviderClientSecret(facebookProvider), utils.GetProviderCallbackUrl(facebookProvider)),
-		instagram.New(utils.GetProviderClientId(instagramProvider), utils.GetProviderClientSecret(instagramProvider), utils.GetProviderCallbackUrl(instagramProvider)),
+		discord.New(ep.GetProviderClientId(discordProvider), ep.GetProviderClientSecret(discordProvider), ep.GetProviderCallbackUrl(discordProvider)),
+		github.New(ep.GetProviderClientId(githubProvider), ep.GetProviderClientSecret(githubProvider), ep.GetProviderCallbackUrl(githubProvider)),
+		google.New(ep.GetProviderClientId(googleProvider), ep.GetProviderClientSecret(googleProvider), ep.GetProviderCallbackUrl(googleProvider)),
+		facebook.New(ep.GetProviderClientId(facebookProvider), ep.GetProviderClientSecret(facebookProvider), ep.GetProviderCallbackUrl(facebookProvider)),
+		instagram.New(ep.GetProviderClientId(instagramProvider), ep.GetProviderClientSecret(instagramProvider), ep.GetProviderCallbackUrl(instagramProvider)),
 	)
 
 	r := g.Group("api/v1/auth")

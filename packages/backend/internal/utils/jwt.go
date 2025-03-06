@@ -1,42 +1,59 @@
 package utils
 
 import (
+	"backend/internal/interfaces"
 	"backend/orm"
 	"errors"
-	"os"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type JwtContent struct {
-	UserID int32
+type TokenContent struct {
+	UserID int32 `json:"userId"`
+	jwt.RegisteredClaims
 }
 
-func getKey() []byte {
-	return []byte(os.Getenv("BACKEND_LOGIN_JWT_SECRET"))
+type AuthTokenManager interface {
+	CreateToken(user orm.User) (string, error)
+	ValidateToken(token string) (*TokenContent, error)
 }
 
-func CreateLoginJwt(user orm.User) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
-		"userId": user.ID,
+type JwtAuthTokenManager struct {
+	AuthTokenManager
+	environmentProvider interfaces.EnvironmentProvider
+}
+
+func NewJwtAuthTokenManager(environmentProvider interfaces.EnvironmentProvider) *JwtAuthTokenManager {
+	return &JwtAuthTokenManager{
+		environmentProvider: environmentProvider,
+	}
+}
+
+func (m *JwtAuthTokenManager) CreateToken(user orm.User) (string, error) {
+	exp := time.Now().Add(time.Duration(24) * time.Hour)
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &TokenContent{
+		UserID: user.ID,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Unix(exp.Unix(), 0)),
+		},
 	})
 
-	return token.SignedString(getKey())
+	return token.SignedString(m.environmentProvider.GetBackendJwtSecretKey())
 }
 
-func ValidateLoginJwt(token string) (*JwtContent, error) {
-	parsed, err := jwt.Parse(token, func(t *jwt.Token) (any, error) {
-		return getKey(), nil
+func (m *JwtAuthTokenManager) ValidateToken(token string) (*TokenContent, error) {
+	parsed, err := jwt.ParseWithClaims(token, &TokenContent{}, func(t *jwt.Token) (any, error) {
+		return m.environmentProvider.GetBackendJwtSecretKey(), nil
 	})
 
 	if err != nil {
 		return nil, err
 	}
 
-	if claims, ok := parsed.Claims.(jwt.MapClaims); ok {
-		return &JwtContent{
-			UserID: claims["userId"].(int32),
-		}, nil
+	if claims, ok := parsed.Claims.(*TokenContent); ok {
+		return claims, nil
 	}
 
 	return nil, errors.New("could not parse jwt claims")

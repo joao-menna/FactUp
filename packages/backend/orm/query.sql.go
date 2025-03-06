@@ -20,7 +20,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, email, display_name FROM "user"
+SELECT id, email, display_name, image_path FROM "user"
 WHERE email = $1
 LIMIT 1
 `
@@ -28,12 +28,17 @@ LIMIT 1
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
 	row := q.db.QueryRow(ctx, getUserByEmail, email)
 	var i User
-	err := row.Scan(&i.ID, &i.Email, &i.DisplayName)
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.DisplayName,
+		&i.ImagePath,
+	)
 	return i, err
 }
 
 const getUserById = `-- name: GetUserById :one
-SELECT id, email, display_name FROM "user"
+SELECT id, email, display_name, image_path FROM "user"
 WHERE id = $1
 LIMIT 1
 `
@@ -41,14 +46,19 @@ LIMIT 1
 func (q *Queries) GetUserById(ctx context.Context, id int32) (User, error) {
 	row := q.db.QueryRow(ctx, getUserById, id)
 	var i User
-	err := row.Scan(&i.ID, &i.Email, &i.DisplayName)
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.DisplayName,
+		&i.ImagePath,
+	)
 	return i, err
 }
 
 const insertUser = `-- name: InsertUser :one
 INSERT INTO "user" (email, display_name)
 VALUES ($1, $2)
-RETURNING id, email, display_name
+RETURNING id, email, display_name, image_path
 `
 
 type InsertUserParams struct {
@@ -59,12 +69,17 @@ type InsertUserParams struct {
 func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, insertUser, arg.Email, arg.DisplayName)
 	var i User
-	err := row.Scan(&i.ID, &i.Email, &i.DisplayName)
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.DisplayName,
+		&i.ImagePath,
+	)
 	return i, err
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, email, display_name FROM "user"
+SELECT id, email, display_name, image_path FROM "user"
 `
 
 func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
@@ -76,7 +91,12 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 	var items []User
 	for rows.Next() {
 		var i User
-		if err := rows.Scan(&i.ID, &i.Email, &i.DisplayName); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.Email,
+			&i.DisplayName,
+			&i.ImagePath,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

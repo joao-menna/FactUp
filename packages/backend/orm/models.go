@@ -17,9 +17,10 @@ type Post struct {
 }
 
 type User struct {
-	ID          int32  `json:"id"`
-	Email       string `json:"email"`
-	DisplayName string `json:"displayName"`
+	ID          int32       `json:"id"`
+	Email       string      `json:"email"`
+	DisplayName string      `json:"displayName"`
+	ImagePath   pgtype.Text `json:"imagePath"`
 }
 
 type UserInteraction struct {

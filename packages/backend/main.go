@@ -11,7 +11,9 @@ import (
 
 func main() {
 	ctx := context.Background()
-	dbPool, err := pgxpool.New(ctx, utils.GetBackendPostgresConnectionUrl())
+
+	ep := utils.NewDefaultEnvironmentProvider()
+	dbPool, err := pgxpool.New(ctx, ep.GetBackendPostgresConnectionUrl())
 	utils.CheckError(err)
 	defer dbPool.Close()
 

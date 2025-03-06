@@ -27,10 +27,12 @@ func fullfillLogin(c *gin.Context, dbConn *pgxpool.Conn, user goth.User) {
 		utils.CheckGinError(err, c)
 	}
 
-	token, err := utils.CreateLoginJwt(dbUser)
+	ep := utils.NewDefaultEnvironmentProvider()
+	authTokenManager := utils.NewJwtAuthTokenManager(ep)
+	token, err := authTokenManager.CreateToken(dbUser)
 	utils.CheckGinError(err, c)
 
-	domain := utils.GetBackendDomain()
+	domain := ep.GetBackendDomain()
 	maxAge := 24 * 60 * 60 * 1000
 
 	c.SetCookie("jwt", token, maxAge, "/", domain, true, true)
