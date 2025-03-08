@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-func ParsePostId(idStr string) (int, error) {
+func ParseQueryId(idStr string) (int, error) {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {

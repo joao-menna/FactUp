@@ -67,7 +67,7 @@ func (ph *DefaultPostHandler) FindById(c *gin.Context) {
 	conn := ph.getConn(c)
 
 	postIdStr := c.Param("id")
-	postId, err := utils.ParsePostId(postIdStr)
+	postId, err := utils.ParseQueryId(postIdStr)
 	utils.CheckGinError(err, c)
 
 	ctx := context.Background()
@@ -82,7 +82,35 @@ func (ph *DefaultPostHandler) FindById(c *gin.Context) {
 }
 
 func (ph *DefaultPostHandler) FindAllByUser(c *gin.Context) {
-	// TODO: FindAllByUser
+	conn := ph.getConn(c)
+
+	userIdStr := c.Param("userId")
+	userId, err := utils.ParseQueryId(userIdStr)
+	utils.CheckGinError(err, c)
+
+	limitStr := c.Query("limit")
+	limit, err := utils.ParsePostLimit(limitStr)
+	utils.CheckGinError(err, c)
+
+	pageStr := c.Query("page")
+	page, err := utils.ParseQueryId(pageStr)
+	utils.CheckGinError(err, c)
+
+	offset := utils.GetPostOffset(limit, page)
+
+	ctx := context.Background()
+
+	queries := orm.New(conn)
+
+	post, err := queries.FindPostsByUserId(ctx, orm.FindPostsByUserIdParams{
+		UserID: int32(userId),
+		Limit:  int32(limit),
+		Offset: int32(offset),
+	})
+
+	utils.CheckGinError(err, c)
+
+	c.JSON(200, post)
 }
 
 func (ph *DefaultPostHandler) InsertPost(c *gin.Context) {

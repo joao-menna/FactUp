@@ -8,19 +8,19 @@ import (
 )
 
 func TestNegativePostIdValue(t *testing.T) {
-	_, err := utils.ParsePostId("-1")
+	_, err := utils.ParseQueryId("-1")
 
 	require.Error(t, err)
 }
 
 func TestZeroPostIdValue(t *testing.T) {
-	_, err := utils.ParsePostId("0")
+	_, err := utils.ParseQueryId("0")
 
 	require.Error(t, err)
 }
 
 func TestValidPostIdValue(t *testing.T) {
-	id, err := utils.ParsePostId("1")
+	id, err := utils.ParseQueryId("1")
 
 	require.NoError(t, err)
 	require.Equal(t, 1, id)
