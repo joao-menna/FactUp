@@ -1,4 +1,4 @@
-package interfaces
+package utils
 
 type EnvironmentProvider interface {
 	GetBackendJwtSecretKey() []byte

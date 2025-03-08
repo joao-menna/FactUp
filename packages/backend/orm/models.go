@@ -10,6 +10,7 @@ import (
 
 type Post struct {
 	ID        int32       `json:"id"`
+	Type      string      `json:"type"`
 	UserID    int32       `json:"userId"`
 	Body      string      `json:"body"`
 	Source    pgtype.Text `json:"source"`
@@ -21,6 +22,7 @@ type User struct {
 	Email       string      `json:"email"`
 	DisplayName string      `json:"displayName"`
 	ImagePath   pgtype.Text `json:"imagePath"`
+	Category    string      `json:"category"`
 }
 
 type UserInteraction struct {

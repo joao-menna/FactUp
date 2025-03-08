@@ -1,13 +1,12 @@
 package utils
 
 import (
-	"backend/internal/interfaces"
 	"os"
 	"strings"
 )
 
 type DefaultEnvironmentProvider struct {
-	interfaces.EnvironmentProvider
+	EnvironmentProvider
 }
 
 func NewDefaultEnvironmentProvider() *DefaultEnvironmentProvider {

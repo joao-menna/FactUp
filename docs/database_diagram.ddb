@@ -47,6 +47,34 @@
           "id": 2,
           "size": "",
           "values": []
+        },
+        {
+          "name": "image_path",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 3,
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "category",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 4,
+          "size": "",
+          "values": []
         }
       ],
       "comment": "",
@@ -84,6 +112,20 @@
           "values": []
         },
         {
+          "name": "type",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 1,
+          "size": "",
+          "values": []
+        },
+        {
           "name": "user_id",
           "type": "INTEGER",
           "default": "",
@@ -93,7 +135,7 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 1,
+          "id": 2,
           "size": "",
           "values": []
         },
@@ -107,7 +149,7 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 2,
+          "id": 3,
           "size": "",
           "values": []
         },
@@ -121,7 +163,7 @@
           "notNull": false,
           "increment": false,
           "comment": "",
-          "id": 3,
+          "id": 4,
           "size": "",
           "values": []
         },
@@ -135,7 +177,7 @@
           "notNull": false,
           "increment": false,
           "comment": "",
-          "id": 4,
+          "id": 5,
           "size": "",
           "values": []
         }
@@ -227,7 +269,7 @@
   "relationships": [
     {
       "startTableId": 1,
-      "startFieldId": 1,
+      "startFieldId": 2,
       "endTableId": 0,
       "endFieldId": 0,
       "cardinality": "many_to_one",

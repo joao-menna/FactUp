@@ -7,7 +7,19 @@ package orm
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
+
+const deletePostById = `-- name: DeletePostById :exec
+DELETE FROM "post"
+WHERE id = $1
+`
+
+func (q *Queries) DeletePostById(ctx context.Context, id int32) error {
+	_, err := q.db.Exec(ctx, deletePostById, id)
+	return err
+}
 
 const deleteUser = `-- name: DeleteUser :exec
 DELETE FROM "user"
@@ -19,67 +31,255 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 	return err
 }
 
-const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, email, display_name, image_path FROM "user"
+const deleteUserInteraction = `-- name: DeleteUserInteraction :exec
+DELETE FROM "user_interaction"
+WHERE post_id = $1 AND user_id = $2
+`
+
+type DeleteUserInteractionParams struct {
+	PostID int32 `json:"postId"`
+	UserID int32 `json:"userId"`
+}
+
+func (q *Queries) DeleteUserInteraction(ctx context.Context, arg DeleteUserInteractionParams) error {
+	_, err := q.db.Exec(ctx, deleteUserInteraction, arg.PostID, arg.UserID)
+	return err
+}
+
+const findPostById = `-- name: FindPostById :one
+
+SELECT id, type, user_id, body, source, image_path FROM "post"
+WHERE id = $1
+LIMIT 1
+`
+
+// ########## POSTS ##########
+func (q *Queries) FindPostById(ctx context.Context, id int32) (Post, error) {
+	row := q.db.QueryRow(ctx, findPostById, id)
+	var i Post
+	err := row.Scan(
+		&i.ID,
+		&i.Type,
+		&i.UserID,
+		&i.Body,
+		&i.Source,
+		&i.ImagePath,
+	)
+	return i, err
+}
+
+const findPostsByUserId = `-- name: FindPostsByUserId :many
+SELECT id, type, user_id, body, source, image_path FROM "post"
+WHERE user_id = $1
+LIMIT $2
+OFFSET $3
+`
+
+type FindPostsByUserIdParams struct {
+	UserID int32 `json:"userId"`
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) FindPostsByUserId(ctx context.Context, arg FindPostsByUserIdParams) ([]Post, error) {
+	rows, err := q.db.Query(ctx, findPostsByUserId, arg.UserID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Post
+	for rows.Next() {
+		var i Post
+		if err := rows.Scan(
+			&i.ID,
+			&i.Type,
+			&i.UserID,
+			&i.Body,
+			&i.Source,
+			&i.ImagePath,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findRandomPosts = `-- name: FindRandomPosts :many
+SELECT id, type, user_id, body, source, image_path FROM "post"
+WHERE "type" = $1
+ORDER BY RANDOM()
+LIMIT $2
+`
+
+type FindRandomPostsParams struct {
+	Type  string `json:"type"`
+	Limit int32  `json:"limit"`
+}
+
+func (q *Queries) FindRandomPosts(ctx context.Context, arg FindRandomPostsParams) ([]Post, error) {
+	rows, err := q.db.Query(ctx, findRandomPosts, arg.Type, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Post
+	for rows.Next() {
+		var i Post
+		if err := rows.Scan(
+			&i.ID,
+			&i.Type,
+			&i.UserID,
+			&i.Body,
+			&i.Source,
+			&i.ImagePath,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findUserByEmail = `-- name: FindUserByEmail :one
+SELECT id, email, display_name, image_path, category FROM "user"
 WHERE email = $1
 LIMIT 1
 `
 
-func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
-	row := q.db.QueryRow(ctx, getUserByEmail, email)
+func (q *Queries) FindUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRow(ctx, findUserByEmail, email)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
 		&i.DisplayName,
 		&i.ImagePath,
+		&i.Category,
 	)
 	return i, err
 }
 
-const getUserById = `-- name: GetUserById :one
-SELECT id, email, display_name, image_path FROM "user"
+const findUserById = `-- name: FindUserById :one
+
+SELECT id, email, display_name, image_path, category FROM "user"
 WHERE id = $1
 LIMIT 1
 `
 
-func (q *Queries) GetUserById(ctx context.Context, id int32) (User, error) {
-	row := q.db.QueryRow(ctx, getUserById, id)
+// ########## USERS ##########
+func (q *Queries) FindUserById(ctx context.Context, id int32) (User, error) {
+	row := q.db.QueryRow(ctx, findUserById, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
 		&i.DisplayName,
+		&i.ImagePath,
+		&i.Category,
+	)
+	return i, err
+}
+
+const insertPost = `-- name: InsertPost :one
+INSERT INTO "post" ("type", user_id, body, source, image_path)
+VALUES ($1, $2, $3, $4, $5)
+RETURNING id, type, user_id, body, source, image_path
+`
+
+type InsertPostParams struct {
+	Type      string      `json:"type"`
+	UserID    int32       `json:"userId"`
+	Body      string      `json:"body"`
+	Source    pgtype.Text `json:"source"`
+	ImagePath pgtype.Text `json:"imagePath"`
+}
+
+func (q *Queries) InsertPost(ctx context.Context, arg InsertPostParams) (Post, error) {
+	row := q.db.QueryRow(ctx, insertPost,
+		arg.Type,
+		arg.UserID,
+		arg.Body,
+		arg.Source,
+		arg.ImagePath,
+	)
+	var i Post
+	err := row.Scan(
+		&i.ID,
+		&i.Type,
+		&i.UserID,
+		&i.Body,
+		&i.Source,
 		&i.ImagePath,
 	)
 	return i, err
 }
 
 const insertUser = `-- name: InsertUser :one
-INSERT INTO "user" (email, display_name)
-VALUES ($1, $2)
-RETURNING id, email, display_name, image_path
+INSERT INTO "user" (email, display_name, image_path, category)
+VALUES ($1, $2, $3, $4)
+RETURNING id, email, display_name, image_path, category
 `
 
 type InsertUserParams struct {
-	Email       string `json:"email"`
-	DisplayName string `json:"displayName"`
+	Email       string      `json:"email"`
+	DisplayName string      `json:"displayName"`
+	ImagePath   pgtype.Text `json:"imagePath"`
+	Category    string      `json:"category"`
 }
 
 func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, insertUser, arg.Email, arg.DisplayName)
+	row := q.db.QueryRow(ctx, insertUser,
+		arg.Email,
+		arg.DisplayName,
+		arg.ImagePath,
+		arg.Category,
+	)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
 		&i.DisplayName,
 		&i.ImagePath,
+		&i.Category,
+	)
+	return i, err
+}
+
+const insertUserInteraction = `-- name: InsertUserInteraction :one
+
+INSERT INTO "user_interaction" (post_id, user_id, score)
+VALUES ($1, $2, $3)
+RETURNING id, post_id, user_id, score
+`
+
+type InsertUserInteractionParams struct {
+	PostID int32 `json:"postId"`
+	UserID int32 `json:"userId"`
+	Score  int16 `json:"score"`
+}
+
+// ########## INTERACTIONS ##########
+func (q *Queries) InsertUserInteraction(ctx context.Context, arg InsertUserInteractionParams) (UserInteraction, error) {
+	row := q.db.QueryRow(ctx, insertUserInteraction, arg.PostID, arg.UserID, arg.Score)
+	var i UserInteraction
+	err := row.Scan(
+		&i.ID,
+		&i.PostID,
+		&i.UserID,
+		&i.Score,
 	)
 	return i, err
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, email, display_name, image_path FROM "user"
+SELECT id, email, display_name, image_path, category FROM "user"
 `
 
 func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
@@ -96,6 +296,7 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 			&i.Email,
 			&i.DisplayName,
 			&i.ImagePath,
+			&i.Category,
 		); err != nil {
 			return nil, err
 		}
@@ -109,11 +310,25 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 
 const updateUser = `-- name: UpdateUser :exec
 UPDATE "user"
-SET display_name = $1
-WHERE id = $1
+SET display_name = $1,
+    image_path = $2,
+    category = $3
+WHERE id = $4
 `
 
-func (q *Queries) UpdateUser(ctx context.Context, displayName string) error {
-	_, err := q.db.Exec(ctx, updateUser, displayName)
+type UpdateUserParams struct {
+	DisplayName string      `json:"displayName"`
+	ImagePath   pgtype.Text `json:"imagePath"`
+	Category    string      `json:"category"`
+	ID          int32       `json:"id"`
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
+	_, err := q.db.Exec(ctx, updateUser,
+		arg.DisplayName,
+		arg.ImagePath,
+		arg.Category,
+		arg.ID,
+	)
 	return err
 }

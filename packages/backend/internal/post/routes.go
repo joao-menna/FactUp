@@ -1,6 +1,4 @@
-// may be useless
-
-package user
+package post
 
 import (
 	"github.com/gin-gonic/gin"
@@ -8,7 +6,9 @@ import (
 )
 
 func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
-	r := g.Group("api/v1/user")
+	r := g.Group("/api/v1/post")
 
-	r.GET(":id", func(c *gin.Context) {})
+	r.GET("multiple/random")
+	r.GET("single/:id")
+	r.GET("user/:userId")
 }

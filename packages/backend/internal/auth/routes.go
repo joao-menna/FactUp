@@ -32,9 +32,11 @@ func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
 		instagram.New(ep.GetProviderClientId(instagramProvider), ep.GetProviderClientSecret(instagramProvider), ep.GetProviderCallbackUrl(instagramProvider)),
 	)
 
-	r := g.Group("api/v1/auth")
+	r := g.Group("/api/v1/auth")
 
-	r.GET("login/:provider", func(ctx *gin.Context) { loginHandler(ctx, dbPool) })
-	r.GET("login/:provider/callback", func(ctx *gin.Context) { loginCallbackHandler(ctx, dbPool) })
-	r.GET("logout", logoutHandler)
+	ah := NewDefaultAuthHandler(dbPool)
+
+	r.GET("login/:provider", ah.LogInUser)
+	r.GET("login/:provider/callback", ah.LogInUserCallback)
+	r.GET("logout", ah.LogOutUser)
 }

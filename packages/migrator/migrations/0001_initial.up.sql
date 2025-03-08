@@ -3,6 +3,7 @@ CREATE TABLE "user" (
 	"email" TEXT NOT NULL UNIQUE,
 	"display_name" TEXT NOT NULL,
 	"image_path" TEXT,
+	"category" TEXT NOT NULL,
 	PRIMARY KEY("id")
 );
 
@@ -11,6 +12,7 @@ ON "user" ("email");
 
 CREATE TABLE "post" (
 	"id" SERIAL NOT NULL UNIQUE,
+	"type" TEXT NOT NULL,
 	"user_id" INTEGER NOT NULL,
 	"body" TEXT NOT NULL,
 	"source" TEXT,

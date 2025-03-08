@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"backend/internal/interfaces"
 	"backend/orm"
 	"errors"
 	"time"
@@ -21,12 +20,12 @@ type AuthTokenManager interface {
 
 type JwtAuthTokenManager struct {
 	AuthTokenManager
-	environmentProvider interfaces.EnvironmentProvider
+	ep EnvironmentProvider
 }
 
-func NewJwtAuthTokenManager(environmentProvider interfaces.EnvironmentProvider) *JwtAuthTokenManager {
+func NewJwtAuthTokenManager(environmentProvider EnvironmentProvider) *JwtAuthTokenManager {
 	return &JwtAuthTokenManager{
-		environmentProvider: environmentProvider,
+		ep: environmentProvider,
 	}
 }
 
@@ -40,12 +39,12 @@ func (m *JwtAuthTokenManager) CreateToken(user orm.User) (string, error) {
 		},
 	})
 
-	return token.SignedString(m.environmentProvider.GetBackendJwtSecretKey())
+	return token.SignedString(m.ep.GetBackendJwtSecretKey())
 }
 
 func (m *JwtAuthTokenManager) ValidateToken(token string) (*TokenContent, error) {
 	parsed, err := jwt.ParseWithClaims(token, &TokenContent{}, func(t *jwt.Token) (any, error) {
-		return m.environmentProvider.GetBackendJwtSecretKey(), nil
+		return m.ep.GetBackendJwtSecretKey(), nil
 	})
 
 	if err != nil {

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/internal/user"
+	"backend/internal/auth"
 	"backend/internal/utils"
 	"context"
 
@@ -19,7 +19,7 @@ func main() {
 
 	r := gin.Default()
 
-	user.Routes(r, dbPool)
+	auth.Routes(r, dbPool)
 
 	err = r.Run(":8080")
 	utils.CheckError(err)
