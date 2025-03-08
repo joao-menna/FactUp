@@ -2,6 +2,8 @@ package main
 
 import (
 	"backend/internal/auth"
+	"backend/internal/interaction"
+	"backend/internal/post"
 	"backend/internal/utils"
 	"context"
 
@@ -20,6 +22,8 @@ func main() {
 	r := gin.Default()
 
 	auth.Routes(r, dbPool)
+	post.Routes(r, dbPool)
+	interaction.Routes(r, dbPool)
 
 	err = r.Run(":8080")
 	utils.CheckError(err)

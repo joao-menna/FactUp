@@ -1,11 +1,13 @@
 package post
 
 import (
+	"backend/internal/auth"
 	"backend/internal/utils"
 	"backend/orm"
 	"context"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -39,8 +41,6 @@ func (ph *DefaultPostHandler) getConn(c *gin.Context) *pgxpool.Conn {
 }
 
 func (ph *DefaultPostHandler) FindRandom(c *gin.Context) {
-	conn := ph.getConn(c)
-
 	postType := c.Query("type")
 	err := utils.ValidatePostType(postType)
 	utils.CheckGinError(err, c)
@@ -50,6 +50,8 @@ func (ph *DefaultPostHandler) FindRandom(c *gin.Context) {
 	utils.CheckGinError(err, c)
 
 	ctx := context.Background()
+
+	conn := ph.getConn(c)
 
 	queries := orm.New(conn)
 
@@ -64,13 +66,13 @@ func (ph *DefaultPostHandler) FindRandom(c *gin.Context) {
 }
 
 func (ph *DefaultPostHandler) FindById(c *gin.Context) {
-	conn := ph.getConn(c)
-
 	postIdStr := c.Param("id")
 	postId, err := utils.ParseQueryId(postIdStr)
 	utils.CheckGinError(err, c)
 
 	ctx := context.Background()
+
+	conn := ph.getConn(c)
 
 	queries := orm.New(conn)
 
@@ -82,8 +84,6 @@ func (ph *DefaultPostHandler) FindById(c *gin.Context) {
 }
 
 func (ph *DefaultPostHandler) FindAllByUser(c *gin.Context) {
-	conn := ph.getConn(c)
-
 	userIdStr := c.Param("userId")
 	userId, err := utils.ParseQueryId(userIdStr)
 	utils.CheckGinError(err, c)
@@ -100,6 +100,8 @@ func (ph *DefaultPostHandler) FindAllByUser(c *gin.Context) {
 
 	ctx := context.Background()
 
+	conn := ph.getConn(c)
+
 	queries := orm.New(conn)
 
 	post, err := queries.FindPostsByUserId(ctx, orm.FindPostsByUserIdParams{
@@ -114,9 +116,77 @@ func (ph *DefaultPostHandler) FindAllByUser(c *gin.Context) {
 }
 
 func (ph *DefaultPostHandler) InsertPost(c *gin.Context) {
-	// TODO: InsertPost
+	var body struct {
+		Type      string `json:"type"`
+		Body      string `json:"body"`
+		Source    string `json:"source"`
+		ImagePath string `json:"imagePath"`
+	}
+
+	userId, exists := c.Get(auth.UserID)
+	if !exists {
+		c.JSON(401, gin.H{
+			"message": "user not logged in",
+		})
+		return
+	}
+
+	err := c.ShouldBindJSON(&body)
+	utils.CheckGinError(err, c)
+
+	ctx := context.Background()
+
+	conn := ph.getConn(c)
+
+	queries := orm.New(conn)
+
+	post, err := queries.InsertPost(ctx, orm.InsertPostParams{
+		Type:      body.Type,
+		UserID:    userId.(int32),
+		Body:      body.Body,
+		Source:    pgtype.Text{String: body.Source},
+		ImagePath: pgtype.Text{String: body.ImagePath},
+	})
+
+	utils.CheckGinError(err, c)
+
+	c.JSON(200, post)
 }
 
 func (ph *DefaultPostHandler) DeletePostById(c *gin.Context) {
-	// TODO: DeletePostById
+	postIdStr := c.Param("postId")
+	postId, err := utils.ParseQueryId(postIdStr)
+
+	userId, exists := c.Get(auth.UserID)
+	category, _ := c.Get(auth.Category)
+	if !exists {
+		c.JSON(401, gin.H{
+			"message": "user not logged in",
+		})
+		return
+	}
+
+	ctx := context.Background()
+
+	conn := ph.getConn(c)
+
+	queries := orm.New(conn)
+
+	post, err := queries.FindPostById(ctx, int32(postId))
+	utils.CheckGinError(err, c)
+
+	if userId != post.UserID || category.(string) != auth.CategoryAdmin {
+		c.JSON(401, gin.H{
+			"message": "this post is not yours",
+		})
+		return
+	}
+
+	err = queries.DeletePostById(ctx, int32(postId))
+
+	utils.CheckGinError(err, c)
+
+	c.JSON(200, gin.H{
+		"message": "post deleted successfully",
+	})
 }

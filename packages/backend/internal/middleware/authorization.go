@@ -22,6 +22,7 @@ func AuthRequired() gin.HandlerFunc {
 		utils.CheckGinError(err, c)
 
 		c.Set(auth.UserID, parsed.UserID)
+		c.Set(auth.Category, parsed.Category)
 
 		c.Next()
 	}

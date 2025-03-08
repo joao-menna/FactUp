@@ -5,4 +5,5 @@ const (
 	CategoryCommon = "common"
 	TokenCookie    = "authorization"
 	UserID         = "user_id"
+	Category       = "category"
 )

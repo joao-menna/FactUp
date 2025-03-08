@@ -13,7 +13,7 @@ func ParseQueryId(idStr string) (int, error) {
 	}
 
 	if id < 1 {
-		return 0, errors.New("invalid post id")
+		return 0, errors.New("invalid query id")
 	}
 
 	return id, nil

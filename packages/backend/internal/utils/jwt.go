@@ -9,7 +9,8 @@ import (
 )
 
 type TokenContent struct {
-	UserID int32 `json:"userId"`
+	UserID   int32  `json:"userId"`
+	Category string `json:"category"`
 	jwt.RegisteredClaims
 }
 
@@ -33,7 +34,8 @@ func (m *JwtAuthTokenManager) CreateToken(user orm.User) (string, error) {
 	exp := time.Now().Add(time.Duration(24) * time.Hour)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &TokenContent{
-		UserID: user.ID,
+		UserID:   user.ID,
+		Category: user.Category,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Unix(exp.Unix(), 0)),
 		},

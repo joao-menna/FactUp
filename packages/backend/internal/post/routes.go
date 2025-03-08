@@ -1,6 +1,8 @@
 package post
 
 import (
+	"backend/internal/middleware"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -8,7 +10,11 @@ import (
 func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
 	r := g.Group("/api/v1/post")
 
-	r.GET("multiple/random")
-	r.GET("single/:id")
-	r.GET("user/:userId")
+	ph := NewDefaultPostHandler(dbPool)
+
+	r.GET("single/:id", ph.FindById)
+	r.GET("multiple/random", ph.FindRandom)
+	r.GET("multiple/user/:userId", ph.FindAllByUser)
+	r.POST("", middleware.AuthRequired(), ph.InsertPost)
+	r.DELETE(":id", middleware.AuthRequired(), ph.DeletePostById)
 }
