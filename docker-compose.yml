@@ -64,6 +64,8 @@ services:
       - BACKEND_POSTGRES_CONNECTION_URL=postgresql://postgres:postgres@postgres:5432/factup?sslmode=disable
     env_file:
       - .env
+    volumes:
+      - ./docker/volumes/images:/app/images
     ports:
       - 8080:8080
     networks:

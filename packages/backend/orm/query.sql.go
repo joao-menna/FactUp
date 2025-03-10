@@ -48,7 +48,8 @@ func (q *Queries) DeleteUserInteraction(ctx context.Context, arg DeleteUserInter
 
 const findPostById = `-- name: FindPostById :one
 
-SELECT id, type, user_id, body, source, image_path FROM "post"
+SELECT id, type, user_id, body, source, image_path
+FROM "post"
 WHERE id = $1
 LIMIT 1
 `
@@ -69,7 +70,8 @@ func (q *Queries) FindPostById(ctx context.Context, id int32) (Post, error) {
 }
 
 const findPostsByUserId = `-- name: FindPostsByUserId :many
-SELECT id, type, user_id, body, source, image_path FROM "post"
+SELECT id, type, user_id, body, source, image_path
+FROM "post"
 WHERE user_id = $1
 LIMIT $2
 OFFSET $3
@@ -109,7 +111,8 @@ func (q *Queries) FindPostsByUserId(ctx context.Context, arg FindPostsByUserIdPa
 }
 
 const findRandomPosts = `-- name: FindRandomPosts :many
-SELECT id, type, user_id, body, source, image_path FROM "post"
+SELECT id, type, user_id, body, source, image_path
+FROM "post"
 WHERE "type" = $1
 ORDER BY RANDOM()
 LIMIT $2
@@ -148,7 +151,8 @@ func (q *Queries) FindRandomPosts(ctx context.Context, arg FindRandomPostsParams
 }
 
 const findUserByEmail = `-- name: FindUserByEmail :one
-SELECT id, email, display_name, image_path, category FROM "user"
+SELECT id, email, display_name, image_path, category
+FROM "user"
 WHERE email = $1
 LIMIT 1
 `
@@ -168,7 +172,8 @@ func (q *Queries) FindUserByEmail(ctx context.Context, email string) (User, erro
 
 const findUserById = `-- name: FindUserById :one
 
-SELECT id, email, display_name, image_path, category FROM "user"
+SELECT id, email, display_name, image_path, category
+FROM "user"
 WHERE id = $1
 LIMIT 1
 `
@@ -279,7 +284,8 @@ func (q *Queries) InsertUserInteraction(ctx context.Context, arg InsertUserInter
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, email, display_name, image_path, category FROM "user"
+SELECT id, email, display_name, image_path, category
+FROM "user"
 `
 
 func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {

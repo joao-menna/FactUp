@@ -6,6 +6,45 @@
 
 Rede social de pequenos fatos sobre qualquer coisa, onde é possível postar apenas 3 fatos diários por usuário.
 
+## Tecnologias utilizadas
+
+Planejamento:
+- [DrawDB](https://drawdb.app/) - Diagrama do banco de dados.
+- [Figma](https://figma.com/) - Wireframing e design da tela.
+
+Infraestrutura:
+
+- [Docker](https://www.docker.com/) - Conteinerizar a aplicação, para fácil manuseio e padronização de ambiente.
+- [Docker Compose](https://docs.docker.com/compose/) - Orquestração de Contêineres.
+- [Nginx](https://nginx.org/) - Servidor HTTP e Proxy Reverso, servirá para manter tudo sob apenas um domínio/subdomínio (factup.me, aquisição vemos depois).
+- [DigitalOcean](https://www.digitalocean.com/) - VMs quase de graça para usar.
+
+Back-end:
+
+- [Hoppscotch](https://hoppscotch.io/) - Testes de API
+- [PostgreSQL](https://www.postgresql.org/) - Banco de dados relacional mais utilizado ultimamente.
+- [Golang-Migrate](https://github.com/golang-migrate/migrate) - Migrações de banco de dados.
+- [Go](https://go.dev/) - Linguagem focada em infraestrutura, está em ascensão para desenvolvimento web.
+- [Gin](https://gin-gonic.com/) (framework web) - Framework Web mais utilizado no ecossistema Go.
+- [Testify](https://github.com/stretchr/testify) - Testes unitários melhorados com Go.
+- [JWT](https://jwt.io) - Autenticação e autorização.
+- [OAuth2](https://oauth.net/2/) - Login por outras aplicações, como Google e GitHub ([Goth](https://github.com/markbates/goth)).
+- [sqlc](https://sqlc.dev/) - Gerador de código Go a partir de SQL.
+
+Front-end:
+
+- SPA - Preferimos usar o formato SPA (single-page application) ao invés de SSR (server-side rendering) pois algumas coisas não funcionariam no formato SSR.
+- [Vite](https://vite.dev/) - Mais rápido app bundler no mercado.
+- [React](https://react.dev/) - Library para interfaces web de usuário.
+- [Radix UI](https://www.radix-ui.com/primitives) - Usado para os componentes mais elaborados.
+- [TailwindCSS](https://tailwindcss.com/) - Forma mais rápida e eficiente de criar CSS.
+- [React Router](https://reactrouter.com/) - Roteador de páginas para React.
+- [Tanstack Query](https://tanstack.com/query/latest) - Ferramenta de data-fetching e caching no client-side.
+- [React Slick](https://react-slick.neostack.com/) - Carrossel de elementos utilizado para o scroll da aplicação.
+
+Front-end (mobile):
+- Avaliar a criação de um front-end mobile em Flutter.
+
 ## Requisitos funcionais
 
 - RF001: O sistema deve permitir o login do usuário pelo provedor Instagram.
@@ -36,9 +75,33 @@ Rede social de pequenos fatos sobre qualquer coisa, onde é possível postar ape
 
 ## Atividades
 
-- (BACK) CRUD da tabela de usuários, será possível alterar Display Name.
-- (BACK) CRUD (apenas Create, Read e Delete) da tabela de fatos.
-- (FRONT) Criar página de login.
-- (FRONT) Criar página com scroll infinito estilo tiktok (de 3 em 3 fatos) para os fatos.
-- (FRONT) Criar página de editar Display Name.
-- (FRONT) Criar página de criar fato.
+- [X] (INFRA) Criar Dockerfile do Back-end.
+- [X] (INFRA) Criar Dockerfile do Migrator.
+- [X] (INFRA) Criar docker-compose.yml com serviços necessários.
+- [ ] (INFRA) Criar CLIENT_ID e CLIENT_SECRET para login do usuário com Instagram.
+- [ ] (INFRA) Criar CLIENT_ID e CLIENT_SECRET para login do usuário com Facebook.
+- [ ] (INFRA) Criar CLIENT_ID e CLIENT_SECRET para login do usuário com Google.
+- [ ] (INFRA) Criar CLIENT_ID e CLIENT_SECRET para login do usuário com GitHub.
+- [X] (INFRA) Criar CLIENT_ID e CLIENT_SECRET para login do usuário com Discord.
+- [X] (MIGRATOR) Criar migrator simples.
+- [X] (BACK) Criar queries para o banco de dados.
+- [X] (BACK) Gerar o código que vai comunicar com o banco de dados pelo sqlc.
+- [X] (BACK) Testes unitários para utilitários.
+- [X] (BACK) Middleware de autorização
+- [X] (BACK) Endpoint GET de log in OAuth2 para a autenticação.
+- [X] (BACK) Endpoint GET de callback de log in OAuth2.
+- [X] (BACK) Endpoint GET de log out.
+- [X] (BACK) Endpoint GET para um post por ID.
+- [X] (BACK) Endpoint GET para múltiplos posts aleatórios.
+- [X] (BACK) Endpoint GET para múltiplos posts de um usuário.
+- [X] (BACK) Endpoint POST protegido para inserir um post.
+- [X] (BACK) Endpoint DELETE protegido para deletar um post por ID (deve ser o autor do post ou o admin).
+- [X] (BACK) Endpoint de servidor estático para as imagens.
+- [X] (BACK) Endpoint POST de upload de imagens.
+- [X] (BACK) Endpoint POST de adicionar interação com post.
+- [X] (BACK) Endpoint DELETE de remover interação com post.
+- [X] (BACK) Fazer os endpoints de posts retornarem o score deles.
+- [ ] (FRONT) Criar página de login.
+- [ ] (FRONT) Criar página com scroll infinito estilo tiktok (de 3 em 3 fatos) para os fatos.
+- [ ] (FRONT) Criar página de editar Display Name.
+- [ ] (FRONT) Criar página de criar fato.

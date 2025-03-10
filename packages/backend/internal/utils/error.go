@@ -15,7 +15,7 @@ func CheckError(err error) {
 func CheckGinError(err error, c *gin.Context) {
 	if err != nil {
 		c.JSON(500, gin.H{
-			"message": "Internal server error",
+			"message": "internal server error",
 		})
 		log.Panicln(err)
 	}

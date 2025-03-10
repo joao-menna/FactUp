@@ -36,3 +36,7 @@ func (p *DefaultEnvironmentProvider) GetProviderClientSecret(provider string) st
 func (p *DefaultEnvironmentProvider) GetProviderCallbackUrl(provider string) string {
 	return os.Getenv("BACKEND_BASE_URL") + "/api/v1/auth/" + strings.ToLower(provider) + "/callback"
 }
+
+func (p *DefaultEnvironmentProvider) GetBaseUrl() string {
+	return os.Getenv("BACKEND_BASE_URL")
+}

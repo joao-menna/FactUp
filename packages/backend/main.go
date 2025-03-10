@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/internal/auth"
+	"backend/internal/image"
 	"backend/internal/interaction"
 	"backend/internal/post"
 	"backend/internal/utils"
@@ -12,6 +13,8 @@ import (
 )
 
 func main() {
+	gin.SetMode(gin.ReleaseMode)
+
 	ctx := context.Background()
 
 	ep := utils.NewDefaultEnvironmentProvider()
@@ -21,6 +24,7 @@ func main() {
 
 	r := gin.Default()
 
+	image.Routes(r)
 	auth.Routes(r, dbPool)
 	post.Routes(r, dbPool)
 	interaction.Routes(r, dbPool)

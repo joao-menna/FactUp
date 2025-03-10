@@ -1,17 +1,20 @@
 -- ########## USERS ##########
 
 -- name: FindUserById :one
-SELECT * FROM "user"
+SELECT *
+FROM "user"
 WHERE id = $1
 LIMIT 1;
 
 -- name: FindUserByEmail :one
-SELECT * FROM "user"
+SELECT *
+FROM "user"
 WHERE email = $1
 LIMIT 1;
 
 -- name: ListUsers :many
-SELECT * FROM "user";
+SELECT *
+FROM "user";
 
 -- name: InsertUser :one
 INSERT INTO "user" (email, display_name, image_path, category)
@@ -34,18 +37,21 @@ WHERE id = $1;
 -- ########## POSTS ##########
 
 -- name: FindPostById :one
-SELECT * FROM "post"
+SELECT *
+FROM "post"
 WHERE id = $1
 LIMIT 1;
 
 -- name: FindRandomPosts :many
-SELECT * FROM "post"
+SELECT *
+FROM "post"
 WHERE "type" = $1
 ORDER BY RANDOM()
 LIMIT $2;
 
 -- name: FindPostsByUserId :many
-SELECT * FROM "post"
+SELECT *
+FROM "post"
 WHERE user_id = $1
 LIMIT $2
 OFFSET $3;

@@ -7,4 +7,5 @@ type EnvironmentProvider interface {
 	GetProviderClientId(provider string) string
 	GetProviderClientSecret(provider string) string
 	GetProviderCallbackUrl(provider string) string
+	GetBaseUrl() string
 }
