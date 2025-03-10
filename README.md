@@ -14,6 +14,7 @@ Planejamento:
 
 Infraestrutura:
 
+- Arquitetura - Monolítico.
 - [Docker](https://www.docker.com/) - Conteinerizar a aplicação, para fácil manuseio e padronização de ambiente.
 - [Docker Compose](https://docs.docker.com/compose/) - Orquestração de Contêineres.
 - [Nginx](https://nginx.org/) - Servidor HTTP e Proxy Reverso, servirá para manter tudo sob apenas um domínio/subdomínio (factup.me, aquisição vemos depois).
