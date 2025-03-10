@@ -34,6 +34,7 @@ Back-end:
 Front-end:
 
 - SPA - Preferimos usar o formato SPA (single-page application) ao invés de SSR (server-side rendering) pois algumas coisas não funcionariam no formato SSR.
+- [Storybook](https://storybook.js.org/) - Desenvolver componentes isoladamente.
 - [Vite](https://vite.dev/) - Mais rápido app bundler no mercado.
 - [React](https://react.dev/) - Library para interfaces web de usuário.
 - [Radix UI](https://www.radix-ui.com/primitives) - Usado para os componentes mais elaborados.
