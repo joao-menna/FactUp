@@ -71,7 +71,7 @@ Front-end (mobile):
 
 - RNF001: O sistema deve usar Go para o back-end.
 - RNF002: O sistema deve usar React para o front-end.
-- RNF003: O sistema deve responder rápido.
+- RNF003: O sistema deve responder rápido (até 5 segundos).
 - RNF004: O sistema deve possuir layout responsivo.
 - RNF005: O sistema deve usar TailwindCSS para a estilização.
 
