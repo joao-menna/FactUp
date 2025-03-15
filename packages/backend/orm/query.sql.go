@@ -11,6 +11,19 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const banUser = `-- name: BanUser :exec
+
+UPDATE "user"
+SET banned = TRUE
+WHERE id = $1
+`
+
+// ########## MOD ##########
+func (q *Queries) BanUser(ctx context.Context, id int32) error {
+	_, err := q.db.Exec(ctx, banUser, id)
+	return err
+}
+
 const deletePostById = `-- name: DeletePostById :exec
 DELETE FROM "post"
 WHERE id = $1
@@ -47,14 +60,12 @@ func (q *Queries) DeleteUserInteraction(ctx context.Context, arg DeleteUserInter
 }
 
 const findPostById = `-- name: FindPostById :one
-
-SELECT id, type, user_id, body, source, image_path
+SELECT id, type, user_id, body, source, image_path, created_at
 FROM "post"
 WHERE id = $1
 LIMIT 1
 `
 
-// ########## POSTS ##########
 func (q *Queries) FindPostById(ctx context.Context, id int32) (Post, error) {
 	row := q.db.QueryRow(ctx, findPostById, id)
 	var i Post
@@ -65,12 +76,13 @@ func (q *Queries) FindPostById(ctx context.Context, id int32) (Post, error) {
 		&i.Body,
 		&i.Source,
 		&i.ImagePath,
+		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const findPostsByUserId = `-- name: FindPostsByUserId :many
-SELECT id, type, user_id, body, source, image_path
+SELECT id, type, user_id, body, source, image_path, created_at
 FROM "post"
 WHERE user_id = $1
 LIMIT $2
@@ -99,6 +111,7 @@ func (q *Queries) FindPostsByUserId(ctx context.Context, arg FindPostsByUserIdPa
 			&i.Body,
 			&i.Source,
 			&i.ImagePath,
+			&i.CreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -111,7 +124,7 @@ func (q *Queries) FindPostsByUserId(ctx context.Context, arg FindPostsByUserIdPa
 }
 
 const findRandomPosts = `-- name: FindRandomPosts :many
-SELECT id, type, user_id, body, source, image_path
+SELECT id, type, user_id, body, source, image_path, created_at
 FROM "post"
 WHERE "type" = $1
 ORDER BY RANDOM()
@@ -139,6 +152,7 @@ func (q *Queries) FindRandomPosts(ctx context.Context, arg FindRandomPostsParams
 			&i.Body,
 			&i.Source,
 			&i.ImagePath,
+			&i.CreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -151,7 +165,7 @@ func (q *Queries) FindRandomPosts(ctx context.Context, arg FindRandomPostsParams
 }
 
 const findUserByEmail = `-- name: FindUserByEmail :one
-SELECT id, email, display_name, image_path, category
+SELECT id, email, display_name, image_path, category, created_at, banned
 FROM "user"
 WHERE email = $1
 LIMIT 1
@@ -166,13 +180,15 @@ func (q *Queries) FindUserByEmail(ctx context.Context, email string) (User, erro
 		&i.DisplayName,
 		&i.ImagePath,
 		&i.Category,
+		&i.CreatedAt,
+		&i.Banned,
 	)
 	return i, err
 }
 
 const findUserById = `-- name: FindUserById :one
 
-SELECT id, email, display_name, image_path, category
+SELECT id, email, display_name, image_path, category, created_at, banned
 FROM "user"
 WHERE id = $1
 LIMIT 1
@@ -188,14 +204,46 @@ func (q *Queries) FindUserById(ctx context.Context, id int32) (User, error) {
 		&i.DisplayName,
 		&i.ImagePath,
 		&i.Category,
+		&i.CreatedAt,
+		&i.Banned,
 	)
 	return i, err
+}
+
+const getInteractionScoreByPostId = `-- name: GetInteractionScoreByPostId :one
+
+SELECT SUM("score") AS total_score
+FROM "user_interaction"
+WHERE post_id = $1
+`
+
+// ########## INTERACTIONS ##########
+func (q *Queries) GetInteractionScoreByPostId(ctx context.Context, postID int32) (int64, error) {
+	row := q.db.QueryRow(ctx, getInteractionScoreByPostId, postID)
+	var total_score int64
+	err := row.Scan(&total_score)
+	return total_score, err
+}
+
+const getPostedCountByDay = `-- name: GetPostedCountByDay :one
+
+SELECT COUNT(*) AS post_count
+FROM "post"
+WHERE DATE("created_at") = CURRENT_DATE AND user_id = $1
+`
+
+// ########## POSTS ##########
+func (q *Queries) GetPostedCountByDay(ctx context.Context, userID int32) (int64, error) {
+	row := q.db.QueryRow(ctx, getPostedCountByDay, userID)
+	var post_count int64
+	err := row.Scan(&post_count)
+	return post_count, err
 }
 
 const insertPost = `-- name: InsertPost :one
 INSERT INTO "post" ("type", user_id, body, source, image_path)
 VALUES ($1, $2, $3, $4, $5)
-RETURNING id, type, user_id, body, source, image_path
+RETURNING id, type, user_id, body, source, image_path, created_at
 `
 
 type InsertPostParams struct {
@@ -222,6 +270,7 @@ func (q *Queries) InsertPost(ctx context.Context, arg InsertPostParams) (Post, e
 		&i.Body,
 		&i.Source,
 		&i.ImagePath,
+		&i.CreatedAt,
 	)
 	return i, err
 }
@@ -229,7 +278,7 @@ func (q *Queries) InsertPost(ctx context.Context, arg InsertPostParams) (Post, e
 const insertUser = `-- name: InsertUser :one
 INSERT INTO "user" (email, display_name, image_path, category)
 VALUES ($1, $2, $3, $4)
-RETURNING id, email, display_name, image_path, category
+RETURNING id, email, display_name, image_path, category, created_at, banned
 `
 
 type InsertUserParams struct {
@@ -253,12 +302,13 @@ func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) (User, e
 		&i.DisplayName,
 		&i.ImagePath,
 		&i.Category,
+		&i.CreatedAt,
+		&i.Banned,
 	)
 	return i, err
 }
 
 const insertUserInteraction = `-- name: InsertUserInteraction :one
-
 INSERT INTO "user_interaction" (post_id, user_id, score)
 VALUES ($1, $2, $3)
 RETURNING id, post_id, user_id, score
@@ -270,7 +320,6 @@ type InsertUserInteractionParams struct {
 	Score  int16 `json:"score"`
 }
 
-// ########## INTERACTIONS ##########
 func (q *Queries) InsertUserInteraction(ctx context.Context, arg InsertUserInteractionParams) (UserInteraction, error) {
 	row := q.db.QueryRow(ctx, insertUserInteraction, arg.PostID, arg.UserID, arg.Score)
 	var i UserInteraction
@@ -284,7 +333,7 @@ func (q *Queries) InsertUserInteraction(ctx context.Context, arg InsertUserInter
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, email, display_name, image_path, category
+SELECT id, email, display_name, image_path, category, created_at, banned
 FROM "user"
 `
 
@@ -303,6 +352,8 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 			&i.DisplayName,
 			&i.ImagePath,
 			&i.Category,
+			&i.CreatedAt,
+			&i.Banned,
 		); err != nil {
 			return nil, err
 		}

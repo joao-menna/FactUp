@@ -58,6 +58,13 @@ func (ah *DefaultAuthHandler) FullfillLogin(c *gin.Context, dbConn *pgxpool.Conn
 		utils.CheckGinError(err, c)
 	}
 
+	if dbUser.Banned {
+		c.JSON(401, gin.H{
+			"message": "you are banned",
+		})
+		return
+	}
+
 	ep := utils.NewDefaultEnvironmentProvider()
 	authTokenManager := utils.NewJwtAuthTokenManager(ep)
 	token, err := authTokenManager.CreateToken(dbUser)

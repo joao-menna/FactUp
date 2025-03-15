@@ -4,6 +4,8 @@ CREATE TABLE "user" (
 	"display_name" TEXT NOT NULL,
 	"image_path" TEXT,
 	"category" TEXT NOT NULL,
+	"created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	"banned" BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY("id")
 );
 
@@ -17,6 +19,7 @@ CREATE TABLE "post" (
 	"body" TEXT NOT NULL,
 	"source" TEXT,
 	"image_path" TEXT,
+	"created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY("id")
 );
 

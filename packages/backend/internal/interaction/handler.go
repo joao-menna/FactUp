@@ -5,12 +5,15 @@ import (
 	"backend/internal/utils"
 	"backend/orm"
 	"context"
+	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type UserInteractionHandler interface {
+	CheckPostShouldDelete(postId int)
+	GetByPostId(c *gin.Context)
 	Add(c *gin.Context)
 	Remove(c *gin.Context)
 }
@@ -26,14 +29,59 @@ func NewDefaultUserInteractionHandler(dbPool *pgxpool.Pool) *DefaultUserInteract
 	}
 }
 
-func (ah *DefaultUserInteractionHandler) getConn(c *gin.Context) *pgxpool.Conn {
+func (ah *DefaultUserInteractionHandler) getConn(c ...*gin.Context) *pgxpool.Conn {
 	ctx := context.Background()
 
 	conn, err := ah.dbPool.Acquire(ctx)
 
-	utils.CheckGinError(err, c)
+	if len(c) > 0 {
+		utils.CheckGinError(err, c[0])
+	}
 
 	return conn
+}
+
+func (uih *DefaultUserInteractionHandler) CheckPostShouldDelete(postId int) {
+	ctx := context.Background()
+
+	conn := uih.getConn()
+
+	queries := orm.New(conn)
+
+	score, err := queries.GetInteractionScoreByPostId(ctx, int32(postId))
+
+	utils.CheckError(err)
+
+	err = utils.CheckIfScoreShouldDeletePost(int(score))
+
+	if err != utils.ErrMaxNegativeScoreReached {
+		return
+	}
+
+	err = queries.DeletePostById(ctx, int32(postId))
+	if err != nil {
+		log.Panicln(err)
+	}
+}
+
+func (uih *DefaultUserInteractionHandler) GetByPostId(c *gin.Context) {
+	postIdStr := c.Param("postId")
+	postId, err := utils.ParseQueryId(postIdStr)
+	utils.CheckGinError(err, c)
+
+	ctx := context.Background()
+
+	conn := uih.getConn(c)
+
+	queries := orm.New(conn)
+
+	score, err := queries.GetInteractionScoreByPostId(ctx, int32(postId))
+
+	utils.CheckGinError(err, c)
+
+	c.JSON(200, gin.H{
+		"score": score,
+	})
 }
 
 func (uih *DefaultUserInteractionHandler) Add(c *gin.Context) {
@@ -65,6 +113,8 @@ func (uih *DefaultUserInteractionHandler) Add(c *gin.Context) {
 		Score:  int16(body.Score),
 	})
 	utils.CheckGinError(err, c)
+
+	go uih.CheckPostShouldDelete(body.PostID)
 
 	c.JSON(200, gin.H{
 		"message": "post scored successfully",

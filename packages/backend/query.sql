@@ -34,7 +34,21 @@ WHERE id = $1;
 
 
 
+-- ########## MOD ##########
+
+-- name: BanUser :exec
+UPDATE "user"
+SET banned = TRUE
+WHERE id = $1;
+
+
+
 -- ########## POSTS ##########
+
+-- name: GetPostedCountByDay :one
+SELECT COUNT(*) AS post_count
+FROM "post"
+WHERE DATE("created_at") = CURRENT_DATE AND user_id = $1;
 
 -- name: FindPostById :one
 SELECT *
@@ -68,6 +82,11 @@ WHERE id = $1;
 
 
 -- ########## INTERACTIONS ##########
+
+-- name: GetInteractionScoreByPostId :one
+SELECT SUM("score") AS total_score
+FROM "user_interaction"
+WHERE post_id = $1;
 
 -- name: InsertUserInteraction :one
 INSERT INTO "user_interaction" (post_id, user_id, score)

@@ -14,6 +14,7 @@ func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
 
 	uih := NewDefaultUserInteractionHandler(dbPool)
 
+	r.GET(":postId", uih.GetByPostId)
 	r.POST("", uih.Add)
 	r.DELETE("", uih.Remove)
 }

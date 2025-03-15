@@ -9,20 +9,23 @@ import (
 )
 
 type Post struct {
-	ID        int32       `json:"id"`
-	Type      string      `json:"type"`
-	UserID    int32       `json:"userId"`
-	Body      string      `json:"body"`
-	Source    pgtype.Text `json:"source"`
-	ImagePath pgtype.Text `json:"imagePath"`
+	ID        int32              `json:"id"`
+	Type      string             `json:"type"`
+	UserID    int32              `json:"userId"`
+	Body      string             `json:"body"`
+	Source    pgtype.Text        `json:"source"`
+	ImagePath pgtype.Text        `json:"imagePath"`
+	CreatedAt pgtype.Timestamptz `json:"createdAt"`
 }
 
 type User struct {
-	ID          int32       `json:"id"`
-	Email       string      `json:"email"`
-	DisplayName string      `json:"displayName"`
-	ImagePath   pgtype.Text `json:"imagePath"`
-	Category    string      `json:"category"`
+	ID          int32              `json:"id"`
+	Email       string             `json:"email"`
+	DisplayName string             `json:"displayName"`
+	ImagePath   pgtype.Text        `json:"imagePath"`
+	Category    string             `json:"category"`
+	CreatedAt   pgtype.Timestamptz `json:"createdAt"`
+	Banned      bool               `json:"banned"`
 }
 
 type UserInteraction struct {

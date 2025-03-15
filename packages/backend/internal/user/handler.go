@@ -1,22 +1,28 @@
 package user
 
 import (
+	"backend/internal/auth"
 	"backend/internal/utils"
 	"backend/orm"
 	"context"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type UserHandler interface {
-	MakeUserAdmin(c *gin.Context)
+	BanUser(c *gin.Context)
 }
 
 type DefaultUserHandler struct {
 	UserHandler
 	dbPool *pgxpool.Pool
+}
+
+func NewDefaultUserHandler(dbPool *pgxpool.Pool) *DefaultUserHandler {
+	return &DefaultUserHandler{
+		dbPool: dbPool,
+	}
 }
 
 func (uh *DefaultUserHandler) getConn(c *gin.Context) *pgxpool.Conn {
@@ -28,19 +34,27 @@ func (uh *DefaultUserHandler) getConn(c *gin.Context) *pgxpool.Conn {
 	return conn
 }
 
-func (uh *DefaultUserHandler) MakeUserAdmin(c *gin.Context) {
-	conn := uh.getConn(c)
+func (uh *DefaultUserHandler) BanUser(c *gin.Context) {
+	category, exists := c.Get(auth.Category)
+	if !exists || category != auth.CategoryAdmin {
+		c.JSON(401, gin.H{
+			"message": "user not logged in",
+		})
+		return
+	}
 
-	idStr := c.Param("id")
-
-	id, err := strconv.Atoi(idStr)
-	utils.CheckGinError(err, c)
-
-	queries := orm.New(conn)
+	idStr := c.Param("userId")
+	id, err := utils.ParseQueryId(idStr)
 
 	ctx := context.Background()
 
-	user, err := queries.FindUserById(ctx, int32(id))
+	conn := uh.getConn(c)
+
+	queries := orm.New(conn)
+
+	err = queries.BanUser(ctx, int32(id))
 	utils.CheckGinError(err, c)
-	c.JSON(200, user)
+	c.JSON(200, gin.H{
+		"message": "user banned",
+	})
 }

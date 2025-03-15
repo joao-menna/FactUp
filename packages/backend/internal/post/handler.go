@@ -140,6 +140,15 @@ func (ph *DefaultPostHandler) InsertPost(c *gin.Context) {
 
 	queries := orm.New(conn)
 
+	count, err := queries.GetPostedCountByDay(ctx, userId.(int32))
+	err = utils.CheckPostMaxCountByDay(int(count))
+	if err == utils.ErrMaxPostForToday {
+		c.JSON(401, gin.H{
+			"message": "reached maximum post count for this account today",
+		})
+		return
+	}
+
 	post, err := queries.InsertPost(ctx, orm.InsertPostParams{
 		Type:      body.Type,
 		UserID:    userId.(int32),

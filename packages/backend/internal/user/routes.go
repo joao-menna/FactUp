@@ -1,5 +1,3 @@
-// may be useless
-
 package user
 
 import (
@@ -10,5 +8,7 @@ import (
 func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
 	r := g.Group("api/v1/user")
 
-	r.GET(":id", func(c *gin.Context) {})
+	uh := NewDefaultUserHandler(dbPool)
+
+	r.DELETE("ban/:userId", uh.BanUser)
 }
