@@ -10,7 +10,7 @@ require (
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/markbates/goth v1.80.0
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/image v0.0.0-20211028202545-6944b10bf410
+	golang.org/x/image v0.25.0
 )
 
 require (
