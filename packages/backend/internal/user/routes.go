@@ -1,6 +1,8 @@
 package user
 
 import (
+	"backend/internal/middleware"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -10,5 +12,5 @@ func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
 
 	uh := NewDefaultUserHandler(dbPool)
 
-	r.DELETE("ban/:userId", uh.BanUser)
+	r.DELETE("ban/:userId", middleware.AuthRequired(), uh.BanUser)
 }

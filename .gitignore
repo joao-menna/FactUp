@@ -26,3 +26,9 @@ go.work.sum
 
 # Docker volumes
 docker/volumes/*
+
+# Coverage files
+packages/backend/coverage
+
+# Sonar-Scanner
+.scannerwork

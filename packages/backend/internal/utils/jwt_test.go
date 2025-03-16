@@ -73,5 +73,6 @@ func TestTokenFlow(t *testing.T) {
 
 	parsedToken, err := m.ValidateToken(tokenStr)
 
+	require.NoError(t, err)
 	require.Equal(t, user.ID, parsedToken.UserID)
 }

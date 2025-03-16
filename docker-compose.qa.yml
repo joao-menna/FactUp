@@ -1,0 +1,47 @@
+services:
+  sonar_postgres:
+    container_name: factup_sonar_postgres
+    image: postgres:17
+    restart: on-failure
+    environment:
+      - POSTGRES_DB=sonar
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "sonar"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - factup_sonar_postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - factup_network
+
+  sonar:
+    image: sonarqube:community
+    container_name: factup_sonarqube
+    environment:
+      - SONAR_JDBC_URL=jdbc:postgresql://sonar_postgres/sonar
+      - SONAR_JDBC_USERNAME=postgres
+      - SONAR_JDBC_PASSWORD=postgres
+    volumes:
+      - ./docker/volumes/sonar/data:/opt/sonarqube/data
+      - ./docker/volumes/sonar/logs:/opt/sonarqube/logs
+      - ./docker/volumes/sonar/extensions:/opt/sonarqube/extensions
+    ports:
+      - 9000:9000
+    networks:
+      - factup_network
+
+
+
+networks:
+  factup_network:
+
+
+
+volumes:
+  factup_sonar_postgres:

@@ -46,7 +46,7 @@ WHERE id = $1;
 -- ########## POSTS ##########
 
 -- name: GetPostedCountByDay :one
-SELECT COUNT(*) AS post_count
+SELECT COUNT(*) AS postCount
 FROM "post"
 WHERE DATE("created_at") = CURRENT_DATE AND user_id = $1;
 
@@ -84,7 +84,7 @@ WHERE id = $1;
 -- ########## INTERACTIONS ##########
 
 -- name: GetInteractionScoreByPostId :one
-SELECT SUM("score") AS total_score
+SELECT SUM("score") AS totalScore
 FROM "user_interaction"
 WHERE post_id = $1;
 

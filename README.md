@@ -108,3 +108,8 @@ Front-end (mobile):
 - [ ] (FRONT) Criar página com scroll infinito estilo tiktok (de 3 em 3 fatos) para os fatos.
 - [ ] (FRONT) Criar página de editar Display Name.
 - [ ] (FRONT) Criar página de criar fato.
+
+## Comandos recorrentes
+
+- [gocyclo](https://github.com/fzipp/gocyclo) - `gocyclo .` - complexidade ciclomática
+- [cloc](https://github.com/AlDanial/cloc) - `cloc .` - contagem de linhas de código

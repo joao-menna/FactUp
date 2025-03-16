@@ -212,7 +212,7 @@ func (q *Queries) FindUserById(ctx context.Context, id int32) (User, error) {
 
 const getInteractionScoreByPostId = `-- name: GetInteractionScoreByPostId :one
 
-SELECT SUM("score") AS total_score
+SELECT SUM("score") AS totalScore
 FROM "user_interaction"
 WHERE post_id = $1
 `
@@ -220,14 +220,14 @@ WHERE post_id = $1
 // ########## INTERACTIONS ##########
 func (q *Queries) GetInteractionScoreByPostId(ctx context.Context, postID int32) (int64, error) {
 	row := q.db.QueryRow(ctx, getInteractionScoreByPostId, postID)
-	var total_score int64
-	err := row.Scan(&total_score)
-	return total_score, err
+	var totalscore int64
+	err := row.Scan(&totalscore)
+	return totalscore, err
 }
 
 const getPostedCountByDay = `-- name: GetPostedCountByDay :one
 
-SELECT COUNT(*) AS post_count
+SELECT COUNT(*) AS postCount
 FROM "post"
 WHERE DATE("created_at") = CURRENT_DATE AND user_id = $1
 `
@@ -235,9 +235,9 @@ WHERE DATE("created_at") = CURRENT_DATE AND user_id = $1
 // ########## POSTS ##########
 func (q *Queries) GetPostedCountByDay(ctx context.Context, userID int32) (int64, error) {
 	row := q.db.QueryRow(ctx, getPostedCountByDay, userID)
-	var post_count int64
-	err := row.Scan(&post_count)
-	return post_count, err
+	var postcount int64
+	err := row.Scan(&postcount)
+	return postcount, err
 }
 
 const insertPost = `-- name: InsertPost :one

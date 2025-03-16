@@ -141,12 +141,17 @@ func (ph *DefaultPostHandler) InsertPost(c *gin.Context) {
 	queries := orm.New(conn)
 
 	count, err := queries.GetPostedCountByDay(ctx, userId.(int32))
+	utils.CheckGinError(err, c)
+
 	err = utils.CheckPostMaxCountByDay(int(count))
-	if err == utils.ErrMaxPostForToday {
-		c.JSON(401, gin.H{
-			"message": "reached maximum post count for this account today",
-		})
-		return
+	if err != nil {
+		if err == utils.ErrMaxPostForToday {
+			c.JSON(401, gin.H{
+				"message": "reached maximum post count for this account today",
+			})
+			return
+		}
+		utils.CheckGinError(err, c)
 	}
 
 	post, err := queries.InsertPost(ctx, orm.InsertPostParams{
@@ -165,6 +170,7 @@ func (ph *DefaultPostHandler) InsertPost(c *gin.Context) {
 func (ph *DefaultPostHandler) DeletePostById(c *gin.Context) {
 	postIdStr := c.Param("postId")
 	postId, err := utils.ParseQueryId(postIdStr)
+	utils.CheckGinError(err, c)
 
 	userId, exists := c.Get(auth.UserID)
 	category, _ := c.Get(auth.Category)

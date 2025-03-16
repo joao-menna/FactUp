@@ -98,7 +98,8 @@ func (ah *DefaultAuthHandler) LogInUserCallback(c *gin.Context) {
 }
 
 func (ah *DefaultAuthHandler) LogOutUser(c *gin.Context) {
-	gothic.Logout(c.Writer, c.Request)
+	err := gothic.Logout(c.Writer, c.Request)
+	utils.CheckGinError(err, c)
 
 	c.JSON(200, gin.H{
 		"message": "logout success",

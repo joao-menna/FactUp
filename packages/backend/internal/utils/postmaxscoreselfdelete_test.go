@@ -13,11 +13,11 @@ func TestCheckIfScoreShouldDeletePostShouldNotThrowWithZero(t *testing.T) {
 }
 
 func TestCheckIfScoreShouldDeletePostShouldNotThrowWithSeven(t *testing.T) {
-	err := utils.CheckIfScoreShouldDeletePost(7)
+	err := utils.CheckIfScoreShouldDeletePost(-7)
 	require.NoError(t, err)
 }
 
 func TestCheckIfScoreShouldDeletePostShouldThrowWithEight(t *testing.T) {
-	err := utils.CheckIfScoreShouldDeletePost(8)
+	err := utils.CheckIfScoreShouldDeletePost(-8)
 	require.Error(t, err)
 }

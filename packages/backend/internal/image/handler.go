@@ -32,8 +32,8 @@ func (ih *DefaultImageHandler) UploadImage(c *gin.Context) {
 	utils.CheckGinError(err, c)
 
 	file, err := header.Open()
-	defer file.Close()
 	utils.CheckGinError(err, c)
+	defer file.Close()
 
 	img, _, err := image.Decode(file)
 	utils.CheckGinError(err, c)

@@ -45,6 +45,7 @@ func (uh *DefaultUserHandler) BanUser(c *gin.Context) {
 
 	idStr := c.Param("userId")
 	id, err := utils.ParseQueryId(idStr)
+	utils.CheckGinError(err, c)
 
 	ctx := context.Background()
 

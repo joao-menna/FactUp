@@ -6,7 +6,7 @@ COPY . .
 
 RUN go build .
 
-FROM alpine AS run
+FROM alpine:3 AS run
 
 WORKDIR /app
 
