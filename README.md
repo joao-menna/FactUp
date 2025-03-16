@@ -64,9 +64,12 @@ Front-end (mobile):
 - RF012: O sistema deve permitir cadastro de texto em um ditado popular.
 - RF013: O sistema deve permitir a curtida (voto positivo) do fato.
 - RF014: O sistema deve permitir o "it's fake!" (voto negativo) do fato.
-- RF015: O sistema deve deletar o fato caso ele possua 8 votos negativos.
-- RF016: O sistema deve permitir o cadastro de Display Name do usuário.
-- RF017: O sistema deve permitir o usuário não cadastrado apenas visualizar os fatos.
+- RF015: O sistema deve permitir a curtida (voto positivo) do ditado popular.
+- RF016: O sistema deve permitir o "it's joking!" (voto negativo) do ditado popular.
+- RF017: O sistema deve deletar o fato caso ele possua 8 votos negativos.
+- RF018: O sistema deve deletar o ditado popular caso ele possua 8 votos negativos.
+- RF019: O sistema deve permitir o cadastro de Display Name do usuário.
+- RF020: O sistema deve permitir o usuário não cadastrado apenas visualizar os fatos.
 
 ## Requisitos não funcionais
 
