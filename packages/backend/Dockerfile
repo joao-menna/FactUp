@@ -10,6 +10,8 @@ WORKDIR /source
 
 COPY . .
 
+RUN go get -v
+
 RUN go build -ldflags="-s -w" -o backend .
 
 FROM debian:bookworm-slim AS run

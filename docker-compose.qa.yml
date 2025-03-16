@@ -1,3 +1,5 @@
+name: factup_qa
+
 services:
   sonar_postgres:
     container_name: factup_sonar_postgres

@@ -3,6 +3,7 @@ package middleware
 import (
 	"backend/internal/auth"
 	"backend/internal/utils"
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +12,16 @@ import (
 func AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cookie, err := c.Cookie(auth.TokenCookie)
-		utils.CheckGinError(err, c)
+		if err == http.ErrNoCookie {
+			cookie = c.GetHeader(auth.TokenCookie)
+		}
+
+		if len(cookie) == 0 {
+			c.JSON(401, gin.H{
+				"message": "user not logged in",
+			})
+			return
+		}
 
 		token := strings.Split(cookie, " ")[1]
 

@@ -1,6 +1,7 @@
 package image
 
 import (
+	"backend/internal/middleware"
 	"backend/internal/utils"
 	"os"
 	"path"
@@ -16,6 +17,6 @@ func Routes(g *gin.Engine) {
 
 	ih := NewDefaultImageHandler()
 
-	r.POST("", ih.UploadImage)
+	r.POST("", middleware.AuthRequired(), ih.UploadImage)
 	r.Static("", path.Join(cwd, "images"))
 }
