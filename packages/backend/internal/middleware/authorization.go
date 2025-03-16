@@ -16,7 +16,7 @@ func AuthRequired() gin.HandlerFunc {
 			cookie = c.GetHeader(auth.TokenCookie)
 		}
 
-		if len(cookie) == 0 {
+		if len(cookie) == 0 || !strings.HasPrefix(cookie, "Bearer ") {
 			c.JSON(401, gin.H{
 				"message": "user not logged in",
 			})
