@@ -77,6 +77,21 @@ services:
 
 
 
+  dcmodder:
+    container_name: factup_dcmodder
+    build:
+      context: ./packages/dcmodder
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    networks:
+      - factup_network
+    depends_on:
+      backend:
+        condition: service_started
+
+
+
 networks:
   factup_network:
 

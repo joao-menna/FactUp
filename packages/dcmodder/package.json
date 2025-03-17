@@ -1,0 +1,17 @@
+{
+  "name": "dcmodder",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "tsc": "tsc",
+    "build": "tsc -p ."
+  },
+  "dependencies": {
+    "bufferutil": "^4.0.9",
+    "discord.js": "^14.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2"
+  }
+}
