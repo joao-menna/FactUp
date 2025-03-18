@@ -41,6 +41,22 @@ UPDATE "user"
 SET banned = TRUE
 WHERE id = $1;
 
+-- name: FindBotById :one
+SELECT *
+FROM "user_bot"
+WHERE id = $1
+LIMIT 1;
+
+-- name: InsertBot :one
+INSERT INTO "user_bot" ("user_id", "name", "secret")
+VALUES ($1, $2, $3)
+RETURNING *;
+
+-- name: InsertBotUser :one
+INSERT INTO "user" (display_name, category)
+VALUES ($1, $2)
+RETURNING *;
+
 
 
 -- ########## POSTS ##########

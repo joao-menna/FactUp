@@ -10,7 +10,7 @@ import (
 func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
 	r := g.Group("/api/v1/interaction")
 
-	r.Use(middleware.AuthRequired())
+	r.Use(middleware.AuthRequired(dbPool))
 
 	uih := NewDefaultUserInteractionHandler(dbPool)
 

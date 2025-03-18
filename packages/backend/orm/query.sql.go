@@ -59,6 +59,25 @@ func (q *Queries) DeleteUserInteraction(ctx context.Context, arg DeleteUserInter
 	return err
 }
 
+const findBotById = `-- name: FindBotById :one
+SELECT id, user_id, name, secret
+FROM "user_bot"
+WHERE id = $1
+LIMIT 1
+`
+
+func (q *Queries) FindBotById(ctx context.Context, id int32) (UserBot, error) {
+	row := q.db.QueryRow(ctx, findBotById, id)
+	var i UserBot
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.Secret,
+	)
+	return i, err
+}
+
 const findPostById = `-- name: FindPostById :one
 SELECT id, type, user_id, body, source, image_path, created_at
 FROM "post"
@@ -171,7 +190,7 @@ WHERE email = $1
 LIMIT 1
 `
 
-func (q *Queries) FindUserByEmail(ctx context.Context, email string) (User, error) {
+func (q *Queries) FindUserByEmail(ctx context.Context, email pgtype.Text) (User, error) {
 	row := q.db.QueryRow(ctx, findUserByEmail, email)
 	var i User
 	err := row.Scan(
@@ -240,6 +259,56 @@ func (q *Queries) GetPostedCountByDay(ctx context.Context, userID int32) (int64,
 	return postcount, err
 }
 
+const insertBot = `-- name: InsertBot :one
+INSERT INTO "user_bot" ("user_id", "name", "secret")
+VALUES ($1, $2, $3)
+RETURNING id, user_id, name, secret
+`
+
+type InsertBotParams struct {
+	UserID int32  `json:"userId"`
+	Name   string `json:"name"`
+	Secret string `json:"secret"`
+}
+
+func (q *Queries) InsertBot(ctx context.Context, arg InsertBotParams) (UserBot, error) {
+	row := q.db.QueryRow(ctx, insertBot, arg.UserID, arg.Name, arg.Secret)
+	var i UserBot
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.Secret,
+	)
+	return i, err
+}
+
+const insertBotUser = `-- name: InsertBotUser :one
+INSERT INTO "user" (display_name, category)
+VALUES ($1, $2)
+RETURNING id, email, display_name, image_path, category, created_at, banned
+`
+
+type InsertBotUserParams struct {
+	DisplayName pgtype.Text `json:"displayName"`
+	Category    string      `json:"category"`
+}
+
+func (q *Queries) InsertBotUser(ctx context.Context, arg InsertBotUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, insertBotUser, arg.DisplayName, arg.Category)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.DisplayName,
+		&i.ImagePath,
+		&i.Category,
+		&i.CreatedAt,
+		&i.Banned,
+	)
+	return i, err
+}
+
 const insertPost = `-- name: InsertPost :one
 INSERT INTO "post" ("type", user_id, body, source, image_path)
 VALUES ($1, $2, $3, $4, $5)
@@ -282,8 +351,8 @@ RETURNING id, email, display_name, image_path, category, created_at, banned
 `
 
 type InsertUserParams struct {
-	Email       string      `json:"email"`
-	DisplayName string      `json:"displayName"`
+	Email       pgtype.Text `json:"email"`
+	DisplayName pgtype.Text `json:"displayName"`
 	ImagePath   pgtype.Text `json:"imagePath"`
 	Category    string      `json:"category"`
 }
@@ -374,7 +443,7 @@ WHERE id = $4
 `
 
 type UpdateUserParams struct {
-	DisplayName string      `json:"displayName"`
+	DisplayName pgtype.Text `json:"displayName"`
 	ImagePath   pgtype.Text `json:"imagePath"`
 	Category    string      `json:"category"`
 	ID          int32       `json:"id"`

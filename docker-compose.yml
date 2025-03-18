@@ -92,10 +92,10 @@ services:
 
 
 
-networks:
-  factup_network:
-
-
-
 volumes:
   factup_postgres:
+
+
+
+networks:
+  factup_network:

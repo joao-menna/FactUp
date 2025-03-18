@@ -17,8 +17,10 @@ RUN go build -ldflags="-s -w" -o backend .
 FROM debian:bookworm-slim AS run
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends libwebp-dev && \
+    apt-get install -y --no-install-recommends libwebp-dev ca-certificates && \
     apt-get clean
+
+RUN update-ca-certificates
 
 WORKDIR /app
 

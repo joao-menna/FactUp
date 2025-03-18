@@ -20,12 +20,19 @@ type Post struct {
 
 type User struct {
 	ID          int32              `json:"id"`
-	Email       string             `json:"email"`
-	DisplayName string             `json:"displayName"`
+	Email       pgtype.Text        `json:"email"`
+	DisplayName pgtype.Text        `json:"displayName"`
 	ImagePath   pgtype.Text        `json:"imagePath"`
 	Category    string             `json:"category"`
 	CreatedAt   pgtype.Timestamptz `json:"createdAt"`
 	Banned      bool               `json:"banned"`
+}
+
+type UserBot struct {
+	ID     int32  `json:"id"`
+	UserID int32  `json:"userId"`
+	Name   string `json:"name"`
+	Secret string `json:"secret"`
 }
 
 type UserInteraction struct {

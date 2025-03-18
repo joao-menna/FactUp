@@ -4,7 +4,10 @@ import (
 	"backend/internal/utils"
 	"backend/orm"
 	"context"
+	"fmt"
+	"net/http"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -46,14 +49,14 @@ func (ah *DefaultAuthHandler) FullfillLogin(c *gin.Context, dbConn *pgxpool.Conn
 
 	queries := orm.New(dbConn)
 
-	dbUser, err := queries.FindUserByEmail(ctx, user.Email)
+	dbUser, err := queries.FindUserByEmail(ctx, pgtype.Text{String: user.Email, Valid: true})
 
 	if err == pgx.ErrNoRows {
 		dbUser, err = queries.InsertUser(ctx, orm.InsertUserParams{
-			ImagePath:   pgtype.Text{String: user.AvatarURL},
-			DisplayName: user.NickName,
+			ImagePath:   pgtype.Text{String: user.AvatarURL, Valid: true},
+			DisplayName: pgtype.Text{String: user.NickName, Valid: true},
 			Category:    CategoryCommon,
-			Email:       user.Email,
+			Email:       pgtype.Text{String: user.Email, Valid: true},
 		})
 		utils.CheckGinError(err, c)
 	}
@@ -76,13 +79,19 @@ func (ah *DefaultAuthHandler) FullfillLogin(c *gin.Context, dbConn *pgxpool.Conn
 
 	c.SetCookie(TokenCookie, bearerToken, maxAge, "/", domain, true, true)
 
-	c.JSON(200, gin.H{
-		"message": "successfully logged in",
-		"token":   bearerToken,
-	})
+	if c.Request.Header.Get("Host") == "" {
+		c.JSON(200, gin.H{
+			"message": "successfully logged in",
+			"token":   bearerToken,
+		})
+	} else {
+		frontendUrl := fmt.Sprintf("%s/?token=%s", ep.GetBaseUrl(), bearerToken)
+		c.Redirect(http.StatusTemporaryRedirect, frontendUrl)
+	}
 }
 
 func (ah *DefaultAuthHandler) LogInUser(c *gin.Context) {
+	gothic.GetProviderName = func(req *http.Request) (string, error) { return c.Param("provider"), nil }
 	if gothUser, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
 		conn := ah.getConn(c)
 		ah.FullfillLogin(c, conn, gothUser)
@@ -92,8 +101,13 @@ func (ah *DefaultAuthHandler) LogInUser(c *gin.Context) {
 }
 
 func (ah *DefaultAuthHandler) LogInUserCallback(c *gin.Context) {
+	gothic.GetProviderName = func(req *http.Request) (string, error) { return c.Param("provider"), nil }
 	user, err := gothic.CompleteUserAuth(c.Writer, c.Request)
 	utils.CheckGinError(err, c)
+
+	session := sessions.Default(c)
+	session.Set("userID", user.UserID)
+	session.Save()
 
 	conn := ah.getConn(c)
 	ah.FullfillLogin(c, conn, user)

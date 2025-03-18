@@ -26,8 +26,8 @@
           "default": "",
           "check": "",
           "primary": false,
-          "unique": true,
-          "notNull": true,
+          "unique": false,
+          "notNull": false,
           "increment": false,
           "comment": "",
           "id": 1,
@@ -41,7 +41,7 @@
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": true,
+          "notNull": false,
           "increment": false,
           "comment": "",
           "id": 2,
@@ -106,16 +106,7 @@
         }
       ],
       "comment": "",
-      "indices": [
-        {
-          "id": 0,
-          "name": "user_email_index",
-          "unique": true,
-          "fields": [
-            "email"
-          ]
-        }
-      ],
+      "indices": [],
       "color": "#175e7a",
       "key": 1740851427143
     },
@@ -306,6 +297,74 @@
       ],
       "color": "#175e7a",
       "key": 1740852845869
+    },
+    {
+      "id": 3,
+      "name": "user_bot",
+      "x": 780.6122086755954,
+      "y": -454.2012370312502,
+      "fields": [
+        {
+          "name": "id",
+          "type": "SERIAL",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 0,
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 1,
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 2,
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "secret",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 3,
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "color": "#175e7a",
+      "key": 1742251204293
     }
   ],
   "relationships": [
@@ -341,6 +400,17 @@
       "deleteConstraint": "Cascade",
       "name": "fk_user_interaction_user_id_user",
       "id": 2
+    },
+    {
+      "startTableId": 3,
+      "startFieldId": 1,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "name": "fk_user_bot_user_id_user",
+      "id": 3
     }
   ],
   "notes": [],

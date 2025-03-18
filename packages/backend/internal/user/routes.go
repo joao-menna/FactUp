@@ -12,5 +12,6 @@ func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
 
 	uh := NewDefaultUserHandler(dbPool)
 
-	r.DELETE("ban/:userId", middleware.AuthRequired(), uh.BanUser)
+	r.POST("bot", middleware.AuthRequired(dbPool), uh.CreateBot)
+	r.DELETE("ban/:userId", middleware.AuthRequired(dbPool), uh.BanUser)
 }

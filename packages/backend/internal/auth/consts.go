@@ -3,7 +3,7 @@ package auth
 const (
 	CategoryAdmin  = "admin"
 	CategoryCommon = "common"
-	TokenCookie    = "authorization"
+	TokenCookie    = "Authorization"
 	UserID         = "user_id"
 	Category       = "category"
 )

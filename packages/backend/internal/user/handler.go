@@ -7,11 +7,14 @@ import (
 	"context"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type UserHandler interface {
 	BanUser(c *gin.Context)
+	CreateBot(c *gin.Context)
 }
 
 type DefaultUserHandler struct {
@@ -57,5 +60,49 @@ func (uh *DefaultUserHandler) BanUser(c *gin.Context) {
 	utils.CheckGinError(err, c)
 	c.JSON(200, gin.H{
 		"message": "user banned",
+	})
+}
+
+func (uh *DefaultUserHandler) CreateBot(c *gin.Context) {
+	category, exists := c.Get(auth.Category)
+	if !exists || category != auth.CategoryAdmin {
+		c.JSON(401, gin.H{
+			"message": "user not logged in",
+		})
+		return
+	}
+
+	var body struct {
+		Name string `json:"name"`
+	}
+
+	err := c.ShouldBindJSON(&body)
+	utils.CheckGinError(err, c)
+
+	ctx := context.Background()
+
+	conn := uh.getConn(c)
+
+	queries := orm.New(conn)
+
+	secret, err := uuid.NewRandom()
+	utils.CheckGinError(err, c)
+
+	user, err := queries.InsertBotUser(ctx, orm.InsertBotUserParams{
+		DisplayName: pgtype.Text{String: body.Name, Valid: true},
+		Category:    auth.CategoryCommon,
+	})
+	utils.CheckGinError(err, c)
+
+	bot, err := queries.InsertBot(ctx, orm.InsertBotParams{
+		UserID: user.ID,
+		Name:   body.Name,
+		Secret: secret.String(),
+	})
+	utils.CheckGinError(err, c)
+
+	c.JSON(200, gin.H{
+		"message":  "bot created",
+		"botToken": string(bot.ID) + "_" + bot.Secret,
 	})
 }

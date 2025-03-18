@@ -158,8 +158,8 @@ func (ph *DefaultPostHandler) InsertPost(c *gin.Context) {
 		Type:      body.Type,
 		UserID:    userId.(int32),
 		Body:      body.Body,
-		Source:    pgtype.Text{String: body.Source},
-		ImagePath: pgtype.Text{String: body.ImagePath},
+		Source:    pgtype.Text{String: body.Source, Valid: true},
+		ImagePath: pgtype.Text{String: body.ImagePath, Valid: true},
 	})
 
 	utils.CheckGinError(err, c)

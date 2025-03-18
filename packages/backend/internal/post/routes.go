@@ -15,6 +15,6 @@ func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
 	r.GET("single/:id", ph.FindById)
 	r.GET("multiple/random", ph.FindRandom)
 	r.GET("multiple/user/:userId", ph.FindAllByUser)
-	r.POST("", middleware.AuthRequired(), ph.InsertPost)
-	r.DELETE(":id", middleware.AuthRequired(), ph.DeletePostById)
+	r.POST("", middleware.AuthRequired(dbPool), ph.InsertPost)
+	r.DELETE(":id", middleware.AuthRequired(dbPool), ph.DeletePostById)
 }
