@@ -49,26 +49,31 @@ func (ah *DefaultAuthHandler) FullfillLogin(c *gin.Context, dbConn *pgxpool.Conn
 
 	queries := orm.New(dbConn)
 
-	dbUser, err := queries.FindUserByEmail(ctx, pgtype.Text{String: user.Email, Valid: true})
+	dbUser, err := queries.FindUserByProviderUserId(ctx, orm.FindUserByProviderUserIdParams{
+		ProviderUserID: pgtype.Text{String: user.UserID, Valid: true},
+		Provider:       pgtype.Text{String: user.Provider, Valid: true},
+	})
 
 	if err == pgx.ErrNoRows {
 		dbUser, err = queries.InsertUser(ctx, orm.InsertUserParams{
-			ImagePath:   pgtype.Text{String: user.AvatarURL, Valid: true},
-			DisplayName: pgtype.Text{String: user.NickName, Valid: true},
-			Category:    CategoryCommon,
-			Email:       pgtype.Text{String: user.Email, Valid: true},
+			ProviderUserID: pgtype.Text{String: user.UserID, Valid: true},
+			Provider:       pgtype.Text{String: user.Provider, Valid: true},
+			ImagePath:      pgtype.Text{String: user.AvatarURL, Valid: true},
+			DisplayName:    pgtype.Text{String: user.NickName, Valid: true},
+			Email:          pgtype.Text{String: user.Email, Valid: true},
+			Category:       CategoryCommon,
 		})
 		utils.CheckGinError(err, c)
 	}
 
+	ep := utils.NewDefaultEnvironmentProvider()
+
 	if dbUser.Banned {
-		c.JSON(401, gin.H{
-			"message": "you are banned",
-		})
+		frontendUrl := fmt.Sprintf("%s/login?banned=true", ep.GetBaseUrl())
+		c.Redirect(http.StatusTemporaryRedirect, frontendUrl)
 		return
 	}
 
-	ep := utils.NewDefaultEnvironmentProvider()
 	authTokenManager := utils.NewJwtAuthTokenManager(ep)
 	token, err := authTokenManager.CreateToken(dbUser)
 	utils.CheckGinError(err, c)
@@ -79,15 +84,8 @@ func (ah *DefaultAuthHandler) FullfillLogin(c *gin.Context, dbConn *pgxpool.Conn
 
 	c.SetCookie(TokenCookie, bearerToken, maxAge, "/", domain, true, true)
 
-	if c.Request.Header.Get("Host") == "" {
-		c.JSON(200, gin.H{
-			"message": "successfully logged in",
-			"token":   bearerToken,
-		})
-	} else {
-		frontendUrl := fmt.Sprintf("%s/?token=%s", ep.GetBaseUrl(), bearerToken)
-		c.Redirect(http.StatusTemporaryRedirect, frontendUrl)
-	}
+	frontendUrl := fmt.Sprintf("%s/login/callback?token=%s", ep.GetBaseUrl(), bearerToken)
+	c.Redirect(http.StatusTemporaryRedirect, frontendUrl)
 }
 
 func (ah *DefaultAuthHandler) LogInUser(c *gin.Context) {

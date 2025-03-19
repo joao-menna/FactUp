@@ -5,6 +5,7 @@ import (
 	"backend/internal/utils"
 	"backend/orm"
 	"context"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -15,6 +16,7 @@ import (
 type UserHandler interface {
 	BanUser(c *gin.Context)
 	CreateBot(c *gin.Context)
+	ResetBotSecret(c *gin.Context)
 }
 
 type DefaultUserHandler struct {
@@ -58,6 +60,7 @@ func (uh *DefaultUserHandler) BanUser(c *gin.Context) {
 
 	err = queries.BanUser(ctx, int32(id))
 	utils.CheckGinError(err, c)
+
 	c.JSON(200, gin.H{
 		"message": "user banned",
 	})
@@ -103,6 +106,40 @@ func (uh *DefaultUserHandler) CreateBot(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"message":  "bot created",
-		"botToken": string(bot.ID) + "_" + bot.Secret,
+		"botToken": fmt.Sprintf("Bot %d_%s", bot.ID, bot.Secret),
+	})
+}
+
+func (uh *DefaultUserHandler) ResetBotSecret(c *gin.Context) {
+	category, exists := c.Get(auth.Category)
+	if !exists || category != auth.CategoryAdmin {
+		c.JSON(401, gin.H{
+			"message": "user not logged in",
+		})
+		return
+	}
+
+	botIdStr := c.Param("id")
+	botId, err := utils.ParseQueryId(botIdStr)
+	utils.CheckGinError(err, c)
+
+	ctx := context.Background()
+
+	conn := uh.getConn(c)
+
+	queries := orm.New(conn)
+
+	secret, err := uuid.NewRandom()
+	utils.CheckGinError(err, c)
+
+	err = queries.UpdateBotSecret(ctx, orm.UpdateBotSecretParams{
+		ID:     int32(botId),
+		Secret: secret.String(),
+	})
+	utils.CheckGinError(err, c)
+
+	c.JSON(200, gin.H{
+		"message":  "bot created",
+		"botToken": fmt.Sprintf("Bot %d_%s", botId, secret.String()),
 	})
 }

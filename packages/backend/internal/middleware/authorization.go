@@ -24,6 +24,7 @@ func AuthRequired(dbPool *pgxpool.Pool) gin.HandlerFunc {
 			c.JSON(401, gin.H{
 				"message": "user not logged in",
 			})
+			c.Abort()
 			return
 		}
 
@@ -31,13 +32,14 @@ func AuthRequired(dbPool *pgxpool.Pool) gin.HandlerFunc {
 			c.JSON(401, gin.H{
 				"message": "invalid token",
 			})
+			c.Abort()
 			return
 		}
 
 		token := strings.Split(cookie, " ")[1]
 
 		if strings.HasPrefix(cookie, "Bearer ") {
-			validateUserToken(token, c)
+			validateUserToken(token, c, dbPool)
 			return
 		}
 
@@ -48,15 +50,33 @@ func AuthRequired(dbPool *pgxpool.Pool) gin.HandlerFunc {
 	}
 }
 
-func validateUserToken(token string, c *gin.Context) {
+func validateUserToken(token string, c *gin.Context, dbPool *pgxpool.Pool) {
 	ep := utils.NewDefaultEnvironmentProvider()
 	atm := utils.NewJwtAuthTokenManager(ep)
 
 	parsed, err := atm.ValidateToken(token)
 	utils.CheckGinError(err, c)
 
+	ctx := context.Background()
+
+	conn, err := dbPool.Acquire(ctx)
+	utils.CheckGinError(err, c)
+
+	queries := orm.New(conn)
+
+	user, err := queries.FindUserById(ctx, int32(parsed.UserID))
+	utils.CheckGinError(err, c)
+
+	if user.Banned {
+		c.JSON(401, gin.H{
+			"message": "user is banned",
+		})
+		c.Abort()
+		return
+	}
+
 	c.Set(auth.UserID, parsed.UserID)
-	c.Set(auth.Category, parsed.Category)
+	c.Set(auth.Category, user.Category)
 
 	c.Next()
 }
@@ -68,6 +88,14 @@ func validateBotToken(token string, c *gin.Context, dbPool *pgxpool.Pool) {
 	utils.CheckGinError(err, c)
 
 	tokenSplit := strings.Split(token, "_")
+	if len(tokenSplit) < 2 {
+		c.JSON(401, gin.H{
+			"message": "invalid bot token",
+		})
+		c.Abort()
+		return
+	}
+
 	botIdStr := tokenSplit[0]
 	botSecret := tokenSplit[1]
 	botId, err := strconv.Atoi(botIdStr)
@@ -82,6 +110,7 @@ func validateBotToken(token string, c *gin.Context, dbPool *pgxpool.Pool) {
 		c.JSON(401, gin.H{
 			"message": "invalid bot secret",
 		})
+		c.Abort()
 		return
 	}
 

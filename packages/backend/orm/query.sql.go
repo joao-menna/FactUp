@@ -184,7 +184,7 @@ func (q *Queries) FindRandomPosts(ctx context.Context, arg FindRandomPostsParams
 }
 
 const findUserByEmail = `-- name: FindUserByEmail :one
-SELECT id, email, display_name, image_path, category, created_at, banned
+SELECT id, provider_user_id, provider, email, display_name, image_path, category, created_at, banned
 FROM "user"
 WHERE email = $1
 LIMIT 1
@@ -195,6 +195,8 @@ func (q *Queries) FindUserByEmail(ctx context.Context, email pgtype.Text) (User,
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.ProviderUserID,
+		&i.Provider,
 		&i.Email,
 		&i.DisplayName,
 		&i.ImagePath,
@@ -207,7 +209,7 @@ func (q *Queries) FindUserByEmail(ctx context.Context, email pgtype.Text) (User,
 
 const findUserById = `-- name: FindUserById :one
 
-SELECT id, email, display_name, image_path, category, created_at, banned
+SELECT id, provider_user_id, provider, email, display_name, image_path, category, created_at, banned
 FROM "user"
 WHERE id = $1
 LIMIT 1
@@ -219,6 +221,38 @@ func (q *Queries) FindUserById(ctx context.Context, id int32) (User, error) {
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.ProviderUserID,
+		&i.Provider,
+		&i.Email,
+		&i.DisplayName,
+		&i.ImagePath,
+		&i.Category,
+		&i.CreatedAt,
+		&i.Banned,
+	)
+	return i, err
+}
+
+const findUserByProviderUserId = `-- name: FindUserByProviderUserId :one
+SELECT id, provider_user_id, provider, email, display_name, image_path, category, created_at, banned
+FROM "user"
+WHERE provider_user_id = $1 AND
+      "provider" = $2
+LIMIT 1
+`
+
+type FindUserByProviderUserIdParams struct {
+	ProviderUserID pgtype.Text `json:"providerUserId"`
+	Provider       pgtype.Text `json:"provider"`
+}
+
+func (q *Queries) FindUserByProviderUserId(ctx context.Context, arg FindUserByProviderUserIdParams) (User, error) {
+	row := q.db.QueryRow(ctx, findUserByProviderUserId, arg.ProviderUserID, arg.Provider)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.ProviderUserID,
+		&i.Provider,
 		&i.Email,
 		&i.DisplayName,
 		&i.ImagePath,
@@ -286,7 +320,7 @@ func (q *Queries) InsertBot(ctx context.Context, arg InsertBotParams) (UserBot, 
 const insertBotUser = `-- name: InsertBotUser :one
 INSERT INTO "user" (display_name, category)
 VALUES ($1, $2)
-RETURNING id, email, display_name, image_path, category, created_at, banned
+RETURNING id, provider_user_id, provider, email, display_name, image_path, category, created_at, banned
 `
 
 type InsertBotUserParams struct {
@@ -299,6 +333,8 @@ func (q *Queries) InsertBotUser(ctx context.Context, arg InsertBotUserParams) (U
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.ProviderUserID,
+		&i.Provider,
 		&i.Email,
 		&i.DisplayName,
 		&i.ImagePath,
@@ -345,20 +381,24 @@ func (q *Queries) InsertPost(ctx context.Context, arg InsertPostParams) (Post, e
 }
 
 const insertUser = `-- name: InsertUser :one
-INSERT INTO "user" (email, display_name, image_path, category)
-VALUES ($1, $2, $3, $4)
-RETURNING id, email, display_name, image_path, category, created_at, banned
+INSERT INTO "user" (provider_user_id, "provider", email, display_name, image_path, category)
+VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING id, provider_user_id, provider, email, display_name, image_path, category, created_at, banned
 `
 
 type InsertUserParams struct {
-	Email       pgtype.Text `json:"email"`
-	DisplayName pgtype.Text `json:"displayName"`
-	ImagePath   pgtype.Text `json:"imagePath"`
-	Category    string      `json:"category"`
+	ProviderUserID pgtype.Text `json:"providerUserId"`
+	Provider       pgtype.Text `json:"provider"`
+	Email          pgtype.Text `json:"email"`
+	DisplayName    pgtype.Text `json:"displayName"`
+	ImagePath      pgtype.Text `json:"imagePath"`
+	Category       string      `json:"category"`
 }
 
 func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, insertUser,
+		arg.ProviderUserID,
+		arg.Provider,
 		arg.Email,
 		arg.DisplayName,
 		arg.ImagePath,
@@ -367,6 +407,8 @@ func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) (User, e
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.ProviderUserID,
+		&i.Provider,
 		&i.Email,
 		&i.DisplayName,
 		&i.ImagePath,
@@ -402,7 +444,7 @@ func (q *Queries) InsertUserInteraction(ctx context.Context, arg InsertUserInter
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, email, display_name, image_path, category, created_at, banned
+SELECT id, provider_user_id, provider, email, display_name, image_path, category, created_at, banned
 FROM "user"
 `
 
@@ -417,6 +459,8 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 		var i User
 		if err := rows.Scan(
 			&i.ID,
+			&i.ProviderUserID,
+			&i.Provider,
 			&i.Email,
 			&i.DisplayName,
 			&i.ImagePath,
@@ -432,6 +476,22 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateBotSecret = `-- name: UpdateBotSecret :exec
+UPDATE "user_bot"
+SET "secret" = $1
+WHERE id = $2
+`
+
+type UpdateBotSecretParams struct {
+	Secret string `json:"secret"`
+	ID     int32  `json:"id"`
+}
+
+func (q *Queries) UpdateBotSecret(ctx context.Context, arg UpdateBotSecretParams) error {
+	_, err := q.db.Exec(ctx, updateBotSecret, arg.Secret, arg.ID)
+	return err
 }
 
 const updateUser = `-- name: UpdateUser :exec

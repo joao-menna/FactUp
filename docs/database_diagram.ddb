@@ -21,7 +21,7 @@
           "values": []
         },
         {
-          "name": "email",
+          "name": "provider_user_id",
           "type": "TEXT",
           "default": "",
           "check": "",
@@ -35,7 +35,7 @@
           "values": []
         },
         {
-          "name": "display_name",
+          "name": "provider",
           "type": "TEXT",
           "default": "",
           "check": "",
@@ -49,7 +49,7 @@
           "values": []
         },
         {
-          "name": "image_path",
+          "name": "email",
           "type": "TEXT",
           "default": "",
           "check": "",
@@ -63,6 +63,34 @@
           "values": []
         },
         {
+          "name": "display_name",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 4,
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "image_path",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "id": 5,
+          "size": "",
+          "values": []
+        },
+        {
           "name": "category",
           "type": "TEXT",
           "default": "",
@@ -72,7 +100,7 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 4,
+          "id": 6,
           "size": "",
           "values": []
         },
@@ -86,7 +114,7 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 5,
+          "id": 7,
           "size": "",
           "values": []
         },
@@ -100,7 +128,7 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 6,
+          "id": 8,
           "size": "",
           "values": []
         }

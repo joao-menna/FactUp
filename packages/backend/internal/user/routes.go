@@ -13,5 +13,6 @@ func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
 	uh := NewDefaultUserHandler(dbPool)
 
 	r.POST("bot", middleware.AuthRequired(dbPool), uh.CreateBot)
+	r.PUT("bot/:id/secret", middleware.AuthRequired(dbPool), uh.ResetBotSecret)
 	r.DELETE("ban/:userId", middleware.AuthRequired(dbPool), uh.BanUser)
 }

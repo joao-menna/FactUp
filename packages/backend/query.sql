@@ -6,6 +6,13 @@ FROM "user"
 WHERE id = $1
 LIMIT 1;
 
+-- name: FindUserByProviderUserId :one
+SELECT *
+FROM "user"
+WHERE provider_user_id = $1 AND
+      "provider" = $2
+LIMIT 1;
+
 -- name: FindUserByEmail :one
 SELECT *
 FROM "user"
@@ -17,8 +24,8 @@ SELECT *
 FROM "user";
 
 -- name: InsertUser :one
-INSERT INTO "user" (email, display_name, image_path, category)
-VALUES ($1, $2, $3, $4)
+INSERT INTO "user" (provider_user_id, "provider", email, display_name, image_path, category)
+VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING *;
 
 -- name: UpdateUser :exec
@@ -51,6 +58,11 @@ LIMIT 1;
 INSERT INTO "user_bot" ("user_id", "name", "secret")
 VALUES ($1, $2, $3)
 RETURNING *;
+
+-- name: UpdateBotSecret :exec
+UPDATE "user_bot"
+SET "secret" = $1
+WHERE id = $2;
 
 -- name: InsertBotUser :one
 INSERT INTO "user" (display_name, category)

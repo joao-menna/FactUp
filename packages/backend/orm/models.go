@@ -19,13 +19,15 @@ type Post struct {
 }
 
 type User struct {
-	ID          int32              `json:"id"`
-	Email       pgtype.Text        `json:"email"`
-	DisplayName pgtype.Text        `json:"displayName"`
-	ImagePath   pgtype.Text        `json:"imagePath"`
-	Category    string             `json:"category"`
-	CreatedAt   pgtype.Timestamptz `json:"createdAt"`
-	Banned      bool               `json:"banned"`
+	ID             int32              `json:"id"`
+	ProviderUserID pgtype.Text        `json:"providerUserId"`
+	Provider       pgtype.Text        `json:"provider"`
+	Email          pgtype.Text        `json:"email"`
+	DisplayName    pgtype.Text        `json:"displayName"`
+	ImagePath      pgtype.Text        `json:"imagePath"`
+	Category       string             `json:"category"`
+	CreatedAt      pgtype.Timestamptz `json:"createdAt"`
+	Banned         bool               `json:"banned"`
 }
 
 type UserBot struct {

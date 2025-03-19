@@ -1,5 +1,7 @@
 CREATE TABLE "user" (
 	"id" SERIAL NOT NULL UNIQUE,
+	"provider_user_id" TEXT,
+	"provider" TEXT,
 	"email" TEXT,
 	"display_name" TEXT,
 	"image_path" TEXT,

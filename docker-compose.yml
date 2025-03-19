@@ -60,6 +60,7 @@ services:
 
   backend:
     container_name: factup_backend
+    restart: on-failure:3
     build:
       context: ./packages/backend
       dockerfile: Dockerfile
@@ -79,6 +80,7 @@ services:
 
   dcmodder:
     container_name: factup_dcmodder
+    restart: on-failure:3
     build:
       context: ./packages/dcmodder
       dockerfile: Dockerfile
