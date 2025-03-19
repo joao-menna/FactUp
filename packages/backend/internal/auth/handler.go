@@ -59,7 +59,7 @@ func (ah *DefaultAuthHandler) FullfillLogin(c *gin.Context, dbConn *pgxpool.Conn
 			ProviderUserID: pgtype.Text{String: user.UserID, Valid: true},
 			Provider:       pgtype.Text{String: user.Provider, Valid: true},
 			ImagePath:      pgtype.Text{String: user.AvatarURL, Valid: true},
-			DisplayName:    pgtype.Text{String: user.NickName, Valid: true},
+			DisplayName:    pgtype.Text{String: user.Name, Valid: true},
 			Email:          pgtype.Text{String: user.Email, Valid: true},
 			Category:       CategoryCommon,
 		})
