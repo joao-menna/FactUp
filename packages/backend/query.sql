@@ -31,9 +31,8 @@ RETURNING *;
 -- name: UpdateUser :exec
 UPDATE "user"
 SET display_name = $1,
-    image_path = $2,
-    category = $3
-WHERE id = $4;
+    image_path = $2
+WHERE id = $3;
 
 -- name: DeleteUser :exec
 DELETE FROM "user"

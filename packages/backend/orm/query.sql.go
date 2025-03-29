@@ -497,24 +497,17 @@ func (q *Queries) UpdateBotSecret(ctx context.Context, arg UpdateBotSecretParams
 const updateUser = `-- name: UpdateUser :exec
 UPDATE "user"
 SET display_name = $1,
-    image_path = $2,
-    category = $3
-WHERE id = $4
+    image_path = $2
+WHERE id = $3
 `
 
 type UpdateUserParams struct {
 	DisplayName pgtype.Text `json:"displayName"`
 	ImagePath   pgtype.Text `json:"imagePath"`
-	Category    string      `json:"category"`
 	ID          int32       `json:"id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
-	_, err := q.db.Exec(ctx, updateUser,
-		arg.DisplayName,
-		arg.ImagePath,
-		arg.Category,
-		arg.ID,
-	)
+	_, err := q.db.Exec(ctx, updateUser, arg.DisplayName, arg.ImagePath, arg.ID)
 	return err
 }

@@ -49,10 +49,28 @@ func (ah *DefaultAuthHandler) FullfillLogin(c *gin.Context, dbConn *pgxpool.Conn
 
 	queries := orm.New(dbConn)
 
+	name := user.Name
+
+	if len(name) == 0 {
+		name = user.NickName
+	}
+
+	if len(name) == 0 {
+		name = user.FirstName
+	}
+
 	dbUser, err := queries.FindUserByProviderUserId(ctx, orm.FindUserByProviderUserIdParams{
 		ProviderUserID: pgtype.Text{String: user.UserID, Valid: true},
 		Provider:       pgtype.Text{String: user.Provider, Valid: true},
 	})
+
+	if err == nil {
+		_ = queries.UpdateUser(ctx, orm.UpdateUserParams{
+			DisplayName: pgtype.Text{String: name, Valid: true},
+			ImagePath:   pgtype.Text{String: user.AvatarURL, Valid: true},
+			ID:          dbUser.ID,
+		})
+	}
 
 	if err == pgx.ErrNoRows {
 		dbUser, err = queries.InsertUser(ctx, orm.InsertUserParams{
