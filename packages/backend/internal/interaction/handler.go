@@ -122,10 +122,6 @@ func (uih *DefaultUserInteractionHandler) Add(c *gin.Context) {
 }
 
 func (uih *DefaultUserInteractionHandler) Remove(c *gin.Context) {
-	var body struct {
-		PostID int `json:"postId"`
-	}
-
 	userId, exists := c.Get(auth.UserID)
 	if !exists {
 		c.JSON(401, gin.H{
@@ -134,7 +130,8 @@ func (uih *DefaultUserInteractionHandler) Remove(c *gin.Context) {
 		return
 	}
 
-	err := c.ShouldBindJSON(&body)
+	postIdStr := c.Param("postId")
+	postId, err := utils.ParseQueryId(postIdStr)
 	utils.CheckGinError(err, c)
 
 	conn := uih.getConn(c)
@@ -144,7 +141,7 @@ func (uih *DefaultUserInteractionHandler) Remove(c *gin.Context) {
 	ctx := context.Background()
 
 	err = queries.DeleteUserInteraction(ctx, orm.DeleteUserInteractionParams{
-		PostID: int32(body.PostID),
+		PostID: int32(postId),
 		UserID: userId.(int32),
 	})
 	utils.CheckGinError(err, c)
