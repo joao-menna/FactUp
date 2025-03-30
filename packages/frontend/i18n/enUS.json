@@ -1,0 +1,14 @@
+{
+  "applicationName": "FactUp",
+  "welcome": "Welcome!",
+  "pageNotFound": "Page not found!",
+  "weHadTroubleTryingToFindThisPage": "We had trouble trying to find this page...",
+  "returnToASafePlace": "Return to a safe place",
+  "return": "Return",
+  "logInWith": "Log in with...",
+  "post": "Post",
+  "curiosities": "Curiosities",
+  "sayings": "Sayings",
+  "signUp": "Sign Up",
+  "logIn": "Log In"
+}

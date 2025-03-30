@@ -1,3 +1,14 @@
 {
-    "welcome": "Bem-vindo(a)!"
+  "applicationName": "FactUp",
+  "welcome": "Bem-vindo(a)!",
+  "pageNotFound": "Página não encontrada!",
+  "weHadTroubleTryingToFindThisPage": "Nós tivemos problemas tentando encontrar essa página...",
+  "returnToASafePlace": "Retornar a um lugar seguro",
+  "return": "Retornar",
+  "logInWith": "Entrar com...",
+  "post": "Postar",
+  "curiosities": "Curiosidades",
+  "sayings": "Ditados populares",
+  "signUp": "Cadastrar-se",
+  "logIn": "Entrar"
 }

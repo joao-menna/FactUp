@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+@theme {
+    --color-primary-500: #5F0A87;
+    --color-primary-600: #530879;
+    --color-primary-700: #47056B;
+    --color-primary-800: #3B035D;
+    --color-primary-900: #2F004F;
+
+    --color-accent-400: #A4508B;
+    --color-accent-500: #822D89;
+
+    --color-text-100: #FFFFFF;
+    --color-text-200: #D9D9D9;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+}
