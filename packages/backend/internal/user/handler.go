@@ -14,6 +14,8 @@ import (
 )
 
 type UserHandler interface {
+	GetLoggedUser(c *gin.Context)
+	GetUser(c *gin.Context)
 	BanUser(c *gin.Context)
 	CreateBot(c *gin.Context)
 	ResetBotSecret(c *gin.Context)
@@ -37,6 +39,51 @@ func (uh *DefaultUserHandler) getConn(c *gin.Context) *pgxpool.Conn {
 	utils.CheckGinError(err, c)
 
 	return conn
+}
+
+func (uh *DefaultUserHandler) GetLoggedUser(c *gin.Context) {
+	id, exists := c.Get(auth.UserID)
+	if !exists {
+		c.JSON(401, gin.H{
+			"message": "user not logged in",
+		})
+	}
+
+	ctx := context.Background()
+
+	conn := uh.getConn(c)
+
+	queries := orm.New(conn)
+
+	user, err := queries.FindUserById(ctx, id.(int32))
+	utils.CheckGinError(err, c)
+
+	c.JSON(200, gin.H{
+		"id":          user.ID,
+		"createdAt":   user.CreatedAt,
+		"displayName": user.DisplayName,
+	})
+}
+
+func (uh *DefaultUserHandler) GetUser(c *gin.Context) {
+	idStr := c.Param("userId")
+	id, err := utils.ParseQueryId(idStr)
+	utils.CheckGinError(err, c)
+
+	ctx := context.Background()
+
+	conn := uh.getConn(c)
+
+	queries := orm.New(conn)
+
+	user, err := queries.FindUserById(ctx, int32(id))
+	utils.CheckGinError(err, c)
+
+	c.JSON(200, gin.H{
+		"id":          user.ID,
+		"createdAt":   user.CreatedAt,
+		"displayName": user.DisplayName,
+	})
 }
 
 func (uh *DefaultUserHandler) BanUser(c *gin.Context) {
