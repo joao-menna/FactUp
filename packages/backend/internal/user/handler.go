@@ -60,6 +60,7 @@ func (uh *DefaultUserHandler) GetLoggedUser(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"id":          user.ID,
+		"imagePath":   user.ImagePath,
 		"createdAt":   user.CreatedAt,
 		"displayName": user.DisplayName,
 	})
@@ -81,6 +82,7 @@ func (uh *DefaultUserHandler) GetUser(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"id":          user.ID,
+		"imagePath":   user.ImagePath,
 		"createdAt":   user.CreatedAt,
 		"displayName": user.DisplayName,
 	})
