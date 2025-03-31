@@ -137,7 +137,5 @@ func (ah *DefaultAuthHandler) LogOutUser(c *gin.Context) {
 	domain := ep.GetBackendDomain()
 	c.SetCookie(TokenCookie, "", 0, "/", domain, true, true)
 
-	c.JSON(200, gin.H{
-		"message": "logout success",
-	})
+	c.Redirect(307, ep.GetBaseUrl())
 }
