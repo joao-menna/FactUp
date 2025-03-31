@@ -28,6 +28,13 @@ func main() {
 
 	r := gin.Default()
 
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost", "http://localhost:5173", "https://factup.me"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Authorization"},
+		AllowCredentials: true,
+	}))
+
 	store := cookie.NewStore(ep.GetBackendJwtSecretKey())
 	r.Use(sessions.Sessions("session", store))
 
@@ -36,12 +43,6 @@ func main() {
 	post.Routes(r, dbPool)
 	user.Routes(r, dbPool)
 	interaction.Routes(r, dbPool)
-
-	r.Use(cors.New(cors.Config{
-		AllowAllOrigins:  true,
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-		AllowCredentials: true,
-	}))
 
 	err = r.Run(":8080")
 	utils.CheckError(err)
