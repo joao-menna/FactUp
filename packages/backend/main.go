@@ -8,6 +8,7 @@ import (
 	"backend/internal/user"
 	"backend/internal/utils"
 	"context"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
@@ -33,6 +34,7 @@ func main() {
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Authorization"},
 		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
 	}))
 
 	store := cookie.NewStore(ep.GetBackendJwtSecretKey())
