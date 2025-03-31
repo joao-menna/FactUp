@@ -9,6 +9,7 @@ import (
 	"backend/internal/utils"
 	"context"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -35,6 +36,12 @@ func main() {
 	post.Routes(r, dbPool)
 	user.Routes(r, dbPool)
 	interaction.Routes(r, dbPool)
+
+	r.Use(cors.New(cors.Config{
+		AllowAllOrigins:  true,
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowCredentials: true,
+	}))
 
 	err = r.Run(":8080")
 	utils.CheckError(err)

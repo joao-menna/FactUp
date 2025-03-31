@@ -133,6 +133,10 @@ func (ah *DefaultAuthHandler) LogOutUser(c *gin.Context) {
 	err := gothic.Logout(c.Writer, c.Request)
 	utils.CheckGinError(err, c)
 
+	ep := utils.NewDefaultEnvironmentProvider()
+	domain := ep.GetBackendDomain()
+	c.SetCookie(TokenCookie, "", 0, "/", domain, true, true)
+
 	c.JSON(200, gin.H{
 		"message": "logout success",
 	})
