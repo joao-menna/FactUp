@@ -6,8 +6,234 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <title>FactUp</title>
   </head>
+  <style> 
+    
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      background-color: #f4f4f4;
+     }
+
+    main {
+        padding: 15px;
+    }
+
+    section {
+        display: flex;
+        flex-direction: column; 
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+        width: 250px; 
+        height: 845px; 
+        max-width: 1200px; 
+    
+    }
+
+    .title {
+        background-color: black; 
+        color: white;
+        padding: 10px;
+        border-radius: 5px; 
+        margin-bottom: 10px; 
+        text-align: center;
+    }
+
+    .post {
+        background-color: black; 
+        color: white; 
+        padding: 10px; 
+        border-radius: 5px; 
+        margin-bottom: 10px; 
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .flex-container-siglog {
+        display: flex; 
+        align-items: center; 
+        
+    }
+
+    .flex-container {
+         display: flex;
+         flex-direction: column; 
+         align-items: center;
+         text-align: center;
+    }
+
+    .curio {
+        margin-right: 5px;
+        border: 1px solid #ccc; 
+        padding: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 252px;
+        height: 40px; 
+    }
+
+    .sayy {
+        border: 1px solid #ccc;
+        padding: 5px; 
+        border-radius: 5px; 
+        margin: 6px;
+        cursor: pointer;
+        width: 252px;
+        height: 40px;
+    }
+
+
+   .sigin {
+        margin-right: 5px; 
+        border: 1px solid #ccc; 
+        padding: 5px; 
+        border-radius: 5px;
+        cursor: pointer;
+        margin-bottom: -1145px;
+    }
+
+    .login {
+        border: 1px solid #ccc;
+        padding: 5px; 
+        border-radius: 5px; 
+        margin-left: 132px;
+        cursor: pointer;
+        margin-bottom: -1145px;
+    }
+
+
+    h1 {
+        margin: 0; 
+    }
+
+.container {
+        display: flex;
+        gap: 20px;
+        justify-content: center; 
+        margin-left: 530px;
+        margin-top: -882px;
+        flex-direction: column;
+    }
+
+    .card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 570px;
+        position: relative; 
+    }
+
+    .profile-pic {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background-color: #ccc;
+        margin: 0 auto 10px;
+        display: flex;
+        margin-left: 10px;
+    }
+
+    .display-name {
+        position: absolute; 
+        top: 10px; 
+        right: 10px;
+        font-weight: bold; 
+        color: #333; 
+    }
+
+
+     .texto-card {
+        color: #333;
+        text-align: center; 
+    }
+
+
+
+</style>
+
   <body>
     <div id="root" class="absolute size-full"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <main> 
+      <section> 
+      <div class="title"> 
+       <h1>Factup</h1> 
+       </div>
+      
+              <div class="post"> 
+              <p>+ Post +</p> 
+              </div>
+      
+              <div class="flex-container"> 
+                  <button class="curio">
+                      <p>Curiosities</p>
+                  </button>
+                  <button class="sayy">
+                      <p>Sayings</p>
+                  </button>
+              </div>
+      
+             <div class="flex-container-siglog"> 
+                  <button class="sigin">
+                      <p>Sig In</p>
+                  </button>
+                  <button class="login">
+                      <p>Log In</p>
+                  </button>
+              </div>
+          </section>
+      
+          
+      <div class="container"> 
+      <div class="card"> 
+      <div class="profile-pic">
+      </div> <div class="display-name">Nome de Exibição 1</div> 
+      
+      <p class="texto-card">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tincidunt dignissim magna et mollis. Praesent dictum eu mi in tempus. Vivamus quis sem vulputate, euismod massa at, viverra neque. Integer lacinia ac dui eget pulvinar. Donec eu rhoncus diam. Proin congue, ipsum ac gravida viverra, purus risus laoreet purus, in hendrerit dolor diam et felis. Suspendisse dui odio, vestibulum non ultrices vitae, rhoncus eu sem. Integer posuere erat fringilla, ultricies mauris sit amet, dignissim mauris. Proin fringilla dictum urna finibus finibus. Donec et leo tincidunt, vestibulum felis in, suscipit nibh. Curabitur lectus purus, sollicitudin at lobortis gravida, mattis eu nulla. Duis imperdiet varius est, eu maximus nunc..</p> 
+      </div> 
+      
+      <div class="card"> 
+      <div class="profile-pic"></div> 
+      <div class="display-name">Nome de Exibição 2</div>
+      
+       <p class="texto-card">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p> 
+      </div> 
+      
+      <div class="card"> 
+      <div class="profile-pic"></div> 
+      <div class="display-name">Nome de Exibição 3</div> 
+      
+      <p class="texto-card">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tincidunt dignissim magna et mollis. Praesent dictum eu mi in tempus. Vivamus quis sem vulputate, euismod massa at, viverra neque. Integer lacinia ac dui eget pulvinar. Donec eu rhoncus diam. Proin congue, ipsum ac gravida viverra, purus risus laoreet purus, in hendrerit dolor diam et felis. Suspendisse dui odio, vestibulum non ultrices vitae, rhoncus eu sem. Integer posuere erat fringilla, ultricies mauris sit amet, dignissim mauris. Proin fringilla dictum urna finibus finibus. Donec et leo tincidunt, vestibulum felis in, suscipit nibh. Curabitur lectus purus, sollicitudin at lobortis gravida, mattis eu nulla. Duis imperdiet varius est, eu maximus nunc.</p> 
+      </div>
+      
+              <div class="card">
+                  <div class="profile-pic"></div>
+                  <div class="display-name">Nome de Exibição 4</div>
+                  <p class="texto-card">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              </div>
+      
+             <div class="card">
+                  <div class="profile-pic"></div>
+                  <div class="display-name">Nome de Exibição 5</div>
+                  <p class="texto-card">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              </div>
+      
+              <div class="card">
+                  <div class="profile-pic"></div>
+                  <div class="display-name">Nome de Exibição 6</div>
+                  <p class="texto-card">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tincidunt dignissim magna et mollis. Praesent dictum eu mi in tempus. Vivamus quis sem vulputate, euismod massa at, viverra neque. Integer lacinia ac dui eget pulvinar. Donec eu rhoncus diam. Proin congue, ipsum ac gravida viverra, purus risus laoreet purus, in hendrerit dolor diam et felis. Suspendisse dui odio, vestibulum non ultrices vitae, rhoncus eu sem. Integer posuere erat fringilla, ultricies mauris sit amet, dignissim mauris. Proin fringilla dictum urna finibus finibus. Donec et leo tincidunt, vestibulum felis in, suscipit nibh. Curabitur lectus purus, sollicitudin at lobortis gravida, mattis eu nulla. Duis imperdiet varius est, eu maximus nunc.</p>
+              </div>
+      
+           <div class="card">
+                  <div class="profile-pic"></div>
+                  <div class="display-name">Nome de Exibição 5</div>
+                  <p class="texto-card">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              </div>
+      </div> 
+      </main>  
   </body>
 </html>
