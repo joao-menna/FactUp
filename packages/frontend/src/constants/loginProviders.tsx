@@ -25,7 +25,7 @@ export const LOGIN_PROVIDERS: LoginProvider[] = [
     bgClassName: "bg-[#1877F240]",
   },
   {
-    provider: "Github",
+    provider: "GitHub",
     icon: <FaGithub />,
     bgClassName: "bg-[#E6E6E640]",
   },

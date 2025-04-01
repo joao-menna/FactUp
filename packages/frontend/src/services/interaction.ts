@@ -2,7 +2,9 @@ class InteractionService {
   baseUrl = `${import.meta.env.VITE_BACKEND_BASE_URL}/api/v1/interaction`;
 
   async get(postId: number) {
-    const req = await fetch(`${this.baseUrl}/${postId}`);
+    const req = await fetch(`${this.baseUrl}/${postId}`, {
+      credentials: "include",
+    });
 
     const json = await req.json();
 
@@ -14,6 +16,7 @@ class InteractionService {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ postId, score: 1 }),
+      credentials: "include",
     });
 
     if (req.status !== 200) {
@@ -30,6 +33,7 @@ class InteractionService {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ postId, score: -1 }),
+      credentials: "include",
     });
 
     if (req.status !== 200) {
@@ -44,6 +48,7 @@ class InteractionService {
   async remove(postId: number) {
     const req = await fetch(`${this.baseUrl}?postId=${postId}`, {
       method: "DELETE",
+      credentials: "include",
     });
 
     if (req.status !== 200) {

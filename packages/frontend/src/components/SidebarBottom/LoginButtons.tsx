@@ -12,7 +12,7 @@ export function LoginButtons() {
   };
 
   return (
-    <div className={clsx("flex gap-2")}>
+    <div className={clsx("flex gap-2 p-2")}>
       <Button
         className={clsx("bg-accent-500 hover:bg-accent-500/80 w-full py-2")}
         onClick={handleClickLogInButton}

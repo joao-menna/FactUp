@@ -9,7 +9,9 @@ class PostService {
   baseUrl = `${import.meta.env.VITE_BACKEND_BASE_URL}/api/v1/post`;
 
   async findById(postId: number) {
-    const req = await fetch(`${this.baseUrl}/single/${postId}`);
+    const req = await fetch(`${this.baseUrl}/single/${postId}`, {
+      credentials: "include",
+    });
 
     const json = await req.json();
 
@@ -18,7 +20,10 @@ class PostService {
 
   async findRandom(type: string, limit: number) {
     const req = await fetch(
-      `${this.baseUrl}/multiple/random?type=${type}&limit=${limit}`
+      `${this.baseUrl}/multiple/random?type=${type}&limit=${limit}`,
+      {
+        credentials: "include",
+      }
     );
 
     const json = await req.json();
@@ -28,7 +33,10 @@ class PostService {
 
   async findPagedByUser(userId: number, limit: number, page: number) {
     const req = await fetch(
-      `${this.baseUrl}/multiple/user/${userId}?limit=${limit}&page=${page}`
+      `${this.baseUrl}/multiple/user/${userId}?limit=${limit}&page=${page}`,
+      {
+        credentials: "include",
+      }
     );
 
     const json = await req.json();
@@ -40,6 +48,7 @@ class PostService {
     const req = await fetch(this.baseUrl, {
       method: "POST",
       body: JSON.stringify(body),
+      credentials: "include",
     });
 
     const json = await req.json();
@@ -50,6 +59,7 @@ class PostService {
   async delete(postId: number) {
     const req = await fetch(`${this.baseUrl}/${postId}`, {
       method: "DELETE",
+      credentials: "include",
     });
 
     const json = await req.json();

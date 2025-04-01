@@ -12,6 +12,7 @@ class ImageService {
     body.append("image", blob);
 
     const req = await fetch(this.baseUrl, {
+      credentials: "include",
       method: "POST",
       body,
     });

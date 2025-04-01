@@ -10,5 +10,7 @@
   "curiosities": "Curiosities",
   "sayings": "Sayings",
   "signUp": "Sign Up",
-  "logIn": "Log In"
+  "logIn": "Log In",
+  "profilePicture": "Profile Picture",
+  "logOut": "Log Out"
 }

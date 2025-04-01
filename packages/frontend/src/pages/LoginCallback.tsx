@@ -1,10 +1,8 @@
-import { useLogin } from "hooks/useLogin";
-import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router";
+import { useEffect } from "react";
 
 export function LoginCallback() {
   const [searchParams] = useSearchParams();
-  const { setBearerToken } = useLogin();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,8 +13,6 @@ export function LoginCallback() {
       return;
     }
 
-    localStorage.setItem("authorization", token);
-    setBearerToken(token);
     navigate("/");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

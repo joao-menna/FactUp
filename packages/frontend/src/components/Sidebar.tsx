@@ -8,8 +8,8 @@ export function Sidebar() {
   const { t } = useTranslation();
 
   return (
-    <div className="w-64 bg-primary-500 p-2 flex flex-col justify-between">
-      <div className={clsx("flex flex-col items-center gap-2")}>
+    <div className="w-64 bg-primary-500 flex flex-col justify-between">
+      <div className={clsx("flex flex-col items-center gap-2 p-2")}>
         <h1 className="text-text-100 text-2xl pt-2 pb-4 select-none">
           {t("applicationName")}
         </h1>

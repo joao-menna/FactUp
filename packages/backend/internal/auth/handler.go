@@ -59,6 +59,10 @@ func (ah *DefaultAuthHandler) FullfillLogin(c *gin.Context, dbConn *pgxpool.Conn
 		name = user.FirstName
 	}
 
+	if len(name) == 0 {
+		name = "Unnamed User"
+	}
+
 	dbUser, err := queries.FindUserByProviderUserId(ctx, orm.FindUserByProviderUserIdParams{
 		ProviderUserID: pgtype.Text{String: user.UserID, Valid: true},
 		Provider:       pgtype.Text{String: user.Provider, Valid: true},
@@ -100,9 +104,9 @@ func (ah *DefaultAuthHandler) FullfillLogin(c *gin.Context, dbConn *pgxpool.Conn
 	maxAge := 24 * 60 * 60 * 1000
 	bearerToken := "Bearer " + token
 
-	c.SetCookie(TokenCookie, bearerToken, maxAge, "/", domain, true, true)
+	c.SetCookie(TokenCookie, bearerToken, maxAge, "/", domain, true, false)
 
-	frontendUrl := fmt.Sprintf("%s/login/callback?token=%s", ep.GetBaseUrl(), bearerToken)
+	frontendUrl := fmt.Sprintf("%s/login/callback", ep.GetBaseUrl())
 	c.Redirect(http.StatusTemporaryRedirect, frontendUrl)
 }
 
@@ -135,7 +139,7 @@ func (ah *DefaultAuthHandler) LogOutUser(c *gin.Context) {
 
 	ep := utils.NewDefaultEnvironmentProvider()
 	domain := ep.GetBackendDomain()
-	c.SetCookie(TokenCookie, "", 0, "/", domain, true, true)
+	c.SetCookie(TokenCookie, "", 0, "/", domain, true, false)
 
 	c.Redirect(307, ep.GetBaseUrl())
 }
