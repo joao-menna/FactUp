@@ -4,10 +4,18 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { Button } from "lib/components/Button";
 import { Card } from "lib/components/Card";
+import { useEffect } from "react";
 
 export function LoginPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (document.cookie.includes("Authorization=Bearer")) {
+      navigate("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleClickReturn = () => {
     navigate("/");

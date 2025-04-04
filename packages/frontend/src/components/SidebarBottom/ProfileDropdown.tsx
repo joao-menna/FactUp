@@ -11,7 +11,7 @@ export function ProfileDropdown() {
   const handleClickLogOut = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
 
-    const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+    const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL ?? "";
     location.href = `${baseUrl}/api/v1/auth/logout`;
   };
 

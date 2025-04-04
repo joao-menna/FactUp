@@ -10,7 +10,7 @@ interface Props {
 
 export function ProviderLoginButton({ icon, provider, bgClassName }: Props) {
   const handleClickProviderLogin = () => {
-    const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+    const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL ?? "";
     const providerName = provider.toLowerCase();
 
     location.href = `${baseUrl}/api/v1/auth/login/${providerName}`;

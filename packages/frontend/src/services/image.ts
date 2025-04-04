@@ -4,7 +4,7 @@ interface PostImageOutput {
 }
 
 class ImageService {
-  baseUrl = `${import.meta.env.VITE_BACKEND_BASE_URL}/api/v1/image`;
+  baseUrl = `${import.meta.env.VITE_BACKEND_BASE_URL ?? ""}/api/v1/image`;
 
   async send(blob: Blob) {
     const body = new FormData();

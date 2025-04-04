@@ -34,7 +34,7 @@ export function MiniLoggedProfile() {
       )}
     >
       <ProfilePicture imagePath={user.imagePath} />
-      <div className={clsx("flex gap-2")}>
+      <div className={clsx("flex gap-2 items-center")}>
         <span>{user.displayName}</span>
         <ProfileDropdown />
       </div>

@@ -6,7 +6,7 @@ interface User {
 }
 
 class UserService {
-  baseUrl = `${import.meta.env.VITE_BACKEND_BASE_URL}/api/v1/user`;
+  baseUrl = `${import.meta.env.VITE_BACKEND_BASE_URL ?? ""}/api/v1/user`;
 
   async getLogged() {
     const req = await fetch(this.baseUrl, {

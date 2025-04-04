@@ -1,5 +1,5 @@
 class InteractionService {
-  baseUrl = `${import.meta.env.VITE_BACKEND_BASE_URL}/api/v1/interaction`;
+  baseUrl = `${import.meta.env.VITE_BACKEND_BASE_URL ?? ""}/api/v1/interaction`;
 
   async get(postId: number) {
     const req = await fetch(`${this.baseUrl}/${postId}`, {

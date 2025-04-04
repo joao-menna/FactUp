@@ -6,7 +6,7 @@ interface InsertPostInput {
 }
 
 class PostService {
-  baseUrl = `${import.meta.env.VITE_BACKEND_BASE_URL}/api/v1/post`;
+  baseUrl = `${import.meta.env.VITE_BACKEND_BASE_URL ?? ""}/api/v1/post`;
 
   async findById(postId: number) {
     const req = await fetch(`${this.baseUrl}/single/${postId}`, {
