@@ -134,6 +134,9 @@ func (ph *DefaultPostHandler) InsertPost(c *gin.Context) {
 	err := c.ShouldBindJSON(&body)
 	utils.CheckGinError(err, c)
 
+	err = utils.ValidatePostType(body.Type)
+	utils.CheckGinError(err, c)
+
 	err = utils.CheckBodyMaxLength(body.Body)
 	utils.CheckGinError(err, c)
 
