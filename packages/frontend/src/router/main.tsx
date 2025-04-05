@@ -6,4 +6,18 @@ export const mainRoutes: RouteObject[] = [
     path: "/",
     element: <HomePage />,
   },
+  {
+    path: "u",
+    children: [
+      {
+        path: ":userId",
+      },
+    ],
+  },
+  {
+    path: "curiosities",
+  },
+  {
+    path: "sayings",
+  },
 ];
