@@ -6,28 +6,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCheckBodyMinLength(t *testing.T) {
-	tests := []struct {
-		body      string
-		expectErr bool
-	}{
-		{"", true},                      // Length 0
-		{"1234", true},                  // Length 4
-		{"12345", true},                 // Length 5
-		{"123456", false},               // Length 6
-		{"This is a valid body", false}, // Length > 5
-	}
-
-	for _, test := range tests {
-		err := CheckBodyMinLength(test.body)
-		if test.expectErr {
-			require.Error(t, err, "CheckBodyMinLength should return an error for body: %q", test.body)
-		} else {
-			require.NoError(t, err, "CheckBodyMinLength should not return an error for body: %q", test.body)
-		}
-	}
-}
-
 func TestCheckBodyMaxLength(t *testing.T) {
 	tests := []struct {
 		body     string

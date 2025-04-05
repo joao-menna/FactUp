@@ -140,9 +140,6 @@ func (ph *DefaultPostHandler) InsertPost(c *gin.Context) {
 	err = utils.ValidatePostType(body.Type)
 	utils.CheckGinError(err, c)
 
-	err = utils.CheckBodyMinLength(body.Body)
-	utils.CheckGinError(err, c)
-
 	err = utils.CheckBodyMaxLength(body.Body)
 	utils.CheckGinError(err, c)
 
