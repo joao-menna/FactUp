@@ -5,6 +5,7 @@ import (
 	"backend/internal/utils"
 	"backend/orm"
 	"context"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -209,6 +210,10 @@ func (ph *DefaultPostHandler) DeletePostById(c *gin.Context) {
 			"message": "this post is not yours",
 		})
 		return
+	}
+
+	if len(post.ImagePath.String) != 0 {
+		os.Remove(post.ImagePath.String)
 	}
 
 	err = queries.DeletePostById(ctx, int32(postId))
