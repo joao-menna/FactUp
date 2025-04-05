@@ -8,6 +8,13 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Image struct {
+	ID        int32              `json:"id"`
+	UserID    int32              `json:"userId"`
+	ImagePath string             `json:"imagePath"`
+	CreatedAt pgtype.Timestamptz `json:"createdAt"`
+}
+
 type Post struct {
 	ID        int32              `json:"id"`
 	Type      string             `json:"type"`

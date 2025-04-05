@@ -137,6 +137,7 @@ func (ph *DefaultPostHandler) InsertPost(c *gin.Context) {
 	ctx := context.Background()
 
 	conn := ph.getConn(c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 
@@ -184,6 +185,7 @@ func (ph *DefaultPostHandler) DeletePostById(c *gin.Context) {
 	ctx := context.Background()
 
 	conn := ph.getConn(c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 

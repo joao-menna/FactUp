@@ -47,6 +47,19 @@ UPDATE "user"
 SET banned = TRUE
 WHERE id = $1;
 
+-- name: FindAllUserImages :many
+SELECT *
+FROM "image"
+WHERE user_id = $1;
+
+-- name: DeleteAllUserImages :exec
+DELETE FROM "image"
+WHERE "user_id" = $1;
+
+-- name: DeleteAllUserPosts :exec
+DELETE FROM "post"
+WHERE "user_id" = $1;
+
 -- name: FindBotById :one
 SELECT *
 FROM "user_bot"
@@ -123,3 +136,24 @@ RETURNING *;
 -- name: DeleteUserInteraction :exec
 DELETE FROM "user_interaction"
 WHERE post_id = $1 AND user_id = $2;
+
+
+
+-- ########## IMAGES ##########
+
+-- name: GetImagePostedInDayByUserId :one
+SELECT COUNT(*) AS totalImages
+FROM "image"
+WHERE "user_id" = $1
+    AND DATE("created_at") = CURRENT_DATE;
+
+-- name: FindImageByImagePath :one
+SELECT *
+FROM "image"
+WHERE image_path = $1
+LIMIT 1;
+
+-- name: InsertImage :one
+INSERT INTO "image" (user_id, image_path)
+VALUES ($1, $2)
+RETURNING *;

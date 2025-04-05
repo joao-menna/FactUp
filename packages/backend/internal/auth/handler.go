@@ -45,6 +45,8 @@ func (ah *DefaultAuthHandler) getConn(c *gin.Context) *pgxpool.Conn {
 }
 
 func (ah *DefaultAuthHandler) FullfillLogin(c *gin.Context, dbConn *pgxpool.Conn, user goth.User) {
+	defer dbConn.Release()
+
 	ctx := context.Background()
 
 	queries := orm.New(dbConn)

@@ -16,7 +16,7 @@ func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
 	cwd, err := os.Getwd()
 	utils.CheckError(err)
 
-	ih := NewDefaultImageHandler()
+	ih := NewDefaultImageHandler(dbPool)
 
 	r.POST("", middleware.AuthRequired(dbPool), ih.UploadImage)
 	r.Static("images", path.Join(cwd, "images"))

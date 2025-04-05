@@ -61,6 +61,7 @@ func validateUserToken(token string, c *gin.Context, dbPool *pgxpool.Pool) {
 
 	conn, err := dbPool.Acquire(ctx)
 	utils.CheckGinError(err, c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 

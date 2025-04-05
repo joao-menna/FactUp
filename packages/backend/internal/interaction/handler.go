@@ -45,6 +45,7 @@ func (uih *DefaultUserInteractionHandler) CheckPostShouldDelete(postId int) {
 	ctx := context.Background()
 
 	conn := uih.getConn()
+	defer conn.Release()
 
 	queries := orm.New(conn)
 
@@ -72,6 +73,7 @@ func (uih *DefaultUserInteractionHandler) GetByPostId(c *gin.Context) {
 	ctx := context.Background()
 
 	conn := uih.getConn(c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 
@@ -102,6 +104,7 @@ func (uih *DefaultUserInteractionHandler) Add(c *gin.Context) {
 	utils.CheckGinError(err, c)
 
 	conn := uih.getConn(c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 
@@ -135,6 +138,7 @@ func (uih *DefaultUserInteractionHandler) Remove(c *gin.Context) {
 	utils.CheckGinError(err, c)
 
 	conn := uih.getConn(c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 

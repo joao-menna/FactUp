@@ -3,8 +3,8 @@
     {
       "id": 0,
       "name": "user",
-      "x": 450.29090711451255,
-      "y": -111.72998523242615,
+      "x": 499.933410025825,
+      "y": -198.60436532722304,
       "fields": [
         {
           "name": "id",
@@ -393,6 +393,72 @@
       "indices": [],
       "color": "#175e7a",
       "key": 1742251204293
+    },
+    {
+      "id": 4,
+      "name": "image",
+      "x": 113.60042249858498,
+      "y": 38.48722209199343,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": 0
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 1,
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "image_path",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 2,
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMPTZ",
+          "default": "CURRENT_TIMESTAMP",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 3,
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "color": "#175e7a",
+      "key": 1743831214373
     }
   ],
   "relationships": [
@@ -414,7 +480,7 @@
       "endFieldId": 0,
       "cardinality": "many_to_one",
       "updateConstraint": "No action",
-      "deleteConstraint": "No action",
+      "deleteConstraint": "Cascade",
       "name": "fk_user_interaction_post_id_post",
       "id": 1
     },
@@ -439,6 +505,17 @@
       "deleteConstraint": "Cascade",
       "name": "fk_user_bot_user_id_user",
       "id": 3
+    },
+    {
+      "startTableId": 4,
+      "startFieldId": 1,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "name": "fk_image_user_id_user",
+      "id": 4
     }
   ],
   "notes": [],

@@ -18,8 +18,6 @@ import (
 )
 
 func main() {
-	gin.SetMode(gin.ReleaseMode)
-
 	ctx := context.Background()
 
 	ep := utils.NewDefaultEnvironmentProvider()

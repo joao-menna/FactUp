@@ -6,6 +6,7 @@ import (
 	"backend/orm"
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -52,6 +53,7 @@ func (uh *DefaultUserHandler) GetLoggedUser(c *gin.Context) {
 	ctx := context.Background()
 
 	conn := uh.getConn(c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 
@@ -74,6 +76,7 @@ func (uh *DefaultUserHandler) GetUser(c *gin.Context) {
 	ctx := context.Background()
 
 	conn := uh.getConn(c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 
@@ -104,14 +107,30 @@ func (uh *DefaultUserHandler) BanUser(c *gin.Context) {
 	ctx := context.Background()
 
 	conn := uh.getConn(c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 
 	err = queries.BanUser(ctx, int32(id))
 	utils.CheckGinError(err, c)
 
+	err = queries.DeleteAllUserPosts(ctx, int32(id))
+	utils.CheckGinError(err, c)
+
+	images, err := queries.FindAllUserImages(ctx, int32(id))
+	utils.CheckGinError(err, c)
+
+	for _, i := range images {
+		imagePath := "images/" + i.ImagePath + ".webp"
+		err := os.Remove(imagePath)
+		utils.CheckGinError(err, c)
+	}
+
+	err = queries.DeleteAllUserImages(ctx, int32(id))
+	utils.CheckGinError(err, c)
+
 	c.JSON(200, gin.H{
-		"message": "user banned",
+		"message": "user banned, posts and images deleted",
 	})
 }
 
@@ -134,6 +153,7 @@ func (uh *DefaultUserHandler) CreateBot(c *gin.Context) {
 	ctx := context.Background()
 
 	conn := uh.getConn(c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 
@@ -175,6 +195,7 @@ func (uh *DefaultUserHandler) ResetBotSecret(c *gin.Context) {
 	ctx := context.Background()
 
 	conn := uh.getConn(c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 

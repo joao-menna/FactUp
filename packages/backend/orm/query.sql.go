@@ -24,6 +24,26 @@ func (q *Queries) BanUser(ctx context.Context, id int32) error {
 	return err
 }
 
+const deleteAllUserImages = `-- name: DeleteAllUserImages :exec
+DELETE FROM "image"
+WHERE "user_id" = $1
+`
+
+func (q *Queries) DeleteAllUserImages(ctx context.Context, userID int32) error {
+	_, err := q.db.Exec(ctx, deleteAllUserImages, userID)
+	return err
+}
+
+const deleteAllUserPosts = `-- name: DeleteAllUserPosts :exec
+DELETE FROM "post"
+WHERE "user_id" = $1
+`
+
+func (q *Queries) DeleteAllUserPosts(ctx context.Context, userID int32) error {
+	_, err := q.db.Exec(ctx, deleteAllUserPosts, userID)
+	return err
+}
+
 const deletePostById = `-- name: DeletePostById :exec
 DELETE FROM "post"
 WHERE id = $1
@@ -59,6 +79,37 @@ func (q *Queries) DeleteUserInteraction(ctx context.Context, arg DeleteUserInter
 	return err
 }
 
+const findAllUserImages = `-- name: FindAllUserImages :many
+SELECT id, user_id, image_path, created_at
+FROM "image"
+WHERE user_id = $1
+`
+
+func (q *Queries) FindAllUserImages(ctx context.Context, userID int32) ([]Image, error) {
+	rows, err := q.db.Query(ctx, findAllUserImages, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Image
+	for rows.Next() {
+		var i Image
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.ImagePath,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const findBotById = `-- name: FindBotById :one
 SELECT id, user_id, name, secret
 FROM "user_bot"
@@ -74,6 +125,25 @@ func (q *Queries) FindBotById(ctx context.Context, id int32) (UserBot, error) {
 		&i.UserID,
 		&i.Name,
 		&i.Secret,
+	)
+	return i, err
+}
+
+const findImageByImagePath = `-- name: FindImageByImagePath :one
+SELECT id, user_id, image_path, created_at
+FROM "image"
+WHERE image_path = $1
+LIMIT 1
+`
+
+func (q *Queries) FindImageByImagePath(ctx context.Context, imagePath string) (Image, error) {
+	row := q.db.QueryRow(ctx, findImageByImagePath, imagePath)
+	var i Image
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.ImagePath,
+		&i.CreatedAt,
 	)
 	return i, err
 }
@@ -263,6 +333,22 @@ func (q *Queries) FindUserByProviderUserId(ctx context.Context, arg FindUserByPr
 	return i, err
 }
 
+const getImagePostedInDayByUserId = `-- name: GetImagePostedInDayByUserId :one
+
+SELECT COUNT(*) AS totalImages
+FROM "image"
+WHERE "user_id" = $1
+    AND DATE("created_at") = CURRENT_DATE
+`
+
+// ########## IMAGES ##########
+func (q *Queries) GetImagePostedInDayByUserId(ctx context.Context, userID int32) (int64, error) {
+	row := q.db.QueryRow(ctx, getImagePostedInDayByUserId, userID)
+	var totalimages int64
+	err := row.Scan(&totalimages)
+	return totalimages, err
+}
+
 const getInteractionScoreByPostId = `-- name: GetInteractionScoreByPostId :one
 
 SELECT SUM("score") AS totalScore
@@ -341,6 +427,29 @@ func (q *Queries) InsertBotUser(ctx context.Context, arg InsertBotUserParams) (U
 		&i.Category,
 		&i.CreatedAt,
 		&i.Banned,
+	)
+	return i, err
+}
+
+const insertImage = `-- name: InsertImage :one
+INSERT INTO "image" (user_id, image_path)
+VALUES ($1, $2)
+RETURNING id, user_id, image_path, created_at
+`
+
+type InsertImageParams struct {
+	UserID    int32  `json:"userId"`
+	ImagePath string `json:"imagePath"`
+}
+
+func (q *Queries) InsertImage(ctx context.Context, arg InsertImageParams) (Image, error) {
+	row := q.db.QueryRow(ctx, insertImage, arg.UserID, arg.ImagePath)
+	var i Image
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.ImagePath,
+		&i.CreatedAt,
 	)
 	return i, err
 }
