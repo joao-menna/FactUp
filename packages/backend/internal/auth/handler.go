@@ -45,8 +45,6 @@ func (ah *DefaultAuthHandler) getConn(c *gin.Context) *pgxpool.Conn {
 }
 
 func (ah *DefaultAuthHandler) FullfillLogin(c *gin.Context, dbConn *pgxpool.Conn, user goth.User) {
-	defer dbConn.Release()
-
 	ctx := context.Background()
 
 	queries := orm.New(dbConn)
@@ -116,6 +114,7 @@ func (ah *DefaultAuthHandler) LogInUser(c *gin.Context) {
 	gothic.GetProviderName = func(req *http.Request) (string, error) { return c.Param("provider"), nil }
 	if gothUser, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
 		conn := ah.getConn(c)
+		defer conn.Release()
 		ah.FullfillLogin(c, conn, gothUser)
 	} else {
 		gothic.BeginAuthHandler(c.Writer, c.Request)
@@ -132,6 +131,7 @@ func (ah *DefaultAuthHandler) LogInUserCallback(c *gin.Context) {
 	session.Save()
 
 	conn := ah.getConn(c)
+	defer conn.Release()
 	ah.FullfillLogin(c, conn, user)
 }
 
