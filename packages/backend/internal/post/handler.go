@@ -52,6 +52,7 @@ func (ph *DefaultPostHandler) FindRandom(c *gin.Context) {
 	ctx := context.Background()
 
 	conn := ph.getConn(c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 
@@ -73,6 +74,7 @@ func (ph *DefaultPostHandler) FindById(c *gin.Context) {
 	ctx := context.Background()
 
 	conn := ph.getConn(c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 
@@ -101,6 +103,7 @@ func (ph *DefaultPostHandler) FindAllByUser(c *gin.Context) {
 	ctx := context.Background()
 
 	conn := ph.getConn(c)
+	defer conn.Release()
 
 	queries := orm.New(conn)
 
@@ -209,7 +212,6 @@ func (ph *DefaultPostHandler) DeletePostById(c *gin.Context) {
 	}
 
 	err = queries.DeletePostById(ctx, int32(postId))
-
 	utils.CheckGinError(err, c)
 
 	c.JSON(200, gin.H{
