@@ -32,8 +32,8 @@ func TestCheckSourceMaxLength(t *testing.T) {
 		expected bool
 	}{
 		{"short source", false},
-		{string(make([]byte, 128)), false},
-		{"this source is way too long and exceeds the maximum length of 128 characters. This is just to ensure that we go over the limit and trigger the error that we expect to receive from the CheckSourceMaxLength function.", true},
+		{string(make([]byte, 80)), false},
+		{"this source is way too long and exceeds the maximum length of 80 characters. This is just to ensure that we go over the limit and trigger the error that we expect to receive from the CheckSourceMaxLength function.", true},
 	}
 
 	for _, test := range tests {

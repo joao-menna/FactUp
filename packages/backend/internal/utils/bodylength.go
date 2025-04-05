@@ -11,7 +11,7 @@ func CheckBodyMaxLength(body string) error {
 }
 
 func CheckSourceMaxLength(source string) error {
-	if len(source) > 128 {
+	if len(source) > 80 {
 		return errors.New("source max length reached")
 	}
 
