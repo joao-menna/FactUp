@@ -7,9 +7,12 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { clsx } from "clsx/lite";
 import { useNavigate } from "react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { CURRENT, USER } from "constants/queryKeys";
 
 export function Sidebar() {
   const [open, setOpen] = useState<boolean>(false);
+  const queryClient = useQueryClient();
   const breakpoint = useBreakpoint();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -27,18 +30,31 @@ export function Sidebar() {
     setOpen(false);
   };
 
+  const handleClickPost = () => {
+    const user = queryClient.getQueryData([USER, CURRENT]);
+
+    setOpen(false);
+
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    navigate("/post");
+  };
+
   return (
     <div
       className={clsx(
         "max-md:absolute max-md:h-full flex duration-100",
-        !open && "max-md:-left-64",
+        !open && "max-md:-left-64 pointer-events-none",
         open && "max-md:left-0"
       )}
     >
       <div
         className={clsx(
           "w-64 bg-primary-500 flex flex-col justify-between",
-          "h-full"
+          "h-full z-20"
         )}
       >
         <div className={clsx("flex flex-col items-center gap-2 p-2")}>
@@ -51,6 +67,7 @@ export function Sidebar() {
             </h1>
           </Button>
           <Button
+            onClick={handleClickPost}
             className={clsx(
               "bg-accent-400 hover:bg-accent-400/80 w-full py-4 flex",
               "items-center justify-between"
@@ -61,10 +78,10 @@ export function Sidebar() {
             <FaPlus />
           </Button>
           <Button
-            onClick={() => handleClickRoute("/curiosities")}
+            onClick={() => handleClickRoute("/facts")}
             className={clsx("bg-accent-500 hover:bg-accent-500/80 w-full py-2")}
           >
-            {t("curiosities")}
+            {t("facts")}
           </Button>
           <Button
             onClick={() => handleClickRoute("/sayings")}
@@ -75,16 +92,29 @@ export function Sidebar() {
         </div>
         <SidebarBottom />
       </div>
-      <Button
-        onClick={() => setOpen(!open)}
-        className={clsx(
-          "bg-accent-500 hover:bg-accent-500/80 rounded-l-none",
-          "md:hidden size-16 flex items-center justify-center"
-        )}
-      >
-        {open && <LuPanelLeftClose className="size-8" />}
-        {!open && <LuPanelRightClose className="size-8" />}
-      </Button>
+      {breakpoint === "sm" && (
+        <>
+          <Button
+            whileTap={{ scale: 1.0 }}
+            onClick={() => setOpen(!open)}
+            className={clsx(
+              "bg-primary-500 rounded-l-none pointer-events-auto",
+              "md:hidden size-14 flex items-center justify-center z-20"
+            )}
+          >
+            {open && <LuPanelLeftClose className="size-8" />}
+            {!open && <LuPanelRightClose className="size-8" />}
+          </Button>
+          <div
+            onClick={() => setOpen(false)}
+            className={clsx(
+              "size-full fixed inset-0 duration-100 z-10",
+              open && "bg-accent-500/25",
+              !open && "bg-accent-500/0 pointer-events-none"
+            )}
+          />
+        </>
+      )}
     </div>
   );
 }

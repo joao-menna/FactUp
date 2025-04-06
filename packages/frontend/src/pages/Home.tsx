@@ -14,15 +14,15 @@ export function HomePage() {
         "p-2 size-full"
       )}
     >
-      <p className="text-text-200">{t("iWantToSee")}</p>
+      <p className="text-text-200 text-lg">{t("iWantToSee")}</p>
       <Button
-        onClick={() => navigate("/curiosities")}
+        onClick={() => navigate("/facts")}
         className={clsx(
           "bg-primary-600 md:w-42 hover:bg-primary-600/80",
           "max-md:w-full h-16"
         )}
       >
-        {t("curiosities")}
+        {t("facts")}
       </Button>
       <Button
         onClick={() => navigate("/sayings")}

@@ -1,7 +1,7 @@
+import { HTMLMotionProps, motion } from "motion/react";
 import { clsx } from "clsx/lite";
-import { JSX } from "react";
 
-type ButtonProps = JSX.IntrinsicElements["button"];
+type ButtonProps = HTMLMotionProps<"button">;
 
 interface Props extends ButtonProps {
   disabled?: boolean;
@@ -9,7 +9,9 @@ interface Props extends ButtonProps {
 
 export function Button({ children, className, disabled, ...rest }: Props) {
   return (
-    <button
+    <motion.button
+      initial={{ scale: 1.0 }}
+      whileTap={{ scale: 0.9 }}
       className={clsx(
         "rounded-lg px-2 py-1.5 duration-100",
         "text-text-200 hover:text-text-100",
@@ -20,6 +22,6 @@ export function Button({ children, className, disabled, ...rest }: Props) {
       {...rest}
     >
       {children}
-    </button>
+    </motion.button>
   );
 }

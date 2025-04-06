@@ -7,7 +7,11 @@ interface Props {
 }
 
 export function MiniProfile({ id }: Props) {
-  const { data: user, isLoading } = useUserById(id);
+  const { data: user, isLoading, isError } = useUserById(id);
+
+  if (isError) {
+    return <></>;
+  }
 
   if (isLoading || !user) {
     return <></>;
@@ -15,13 +19,12 @@ export function MiniProfile({ id }: Props) {
 
   return (
     <div
-      className={clsx(
-        "flex gap-4 justify-between items-center",
-        "text-text-200"
-      )}
+      className={clsx("flex gap-4 items-center", "text-text-200 select-none")}
     >
       <ProfilePicture imagePath={user.imagePath} />
-      <span>{user.displayName}</span>
+      <span className="whitespace-pre-wrap break-words relative">
+        {user.displayName}
+      </span>
     </div>
   );
 }
