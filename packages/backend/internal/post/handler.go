@@ -205,7 +205,7 @@ func (ph *DefaultPostHandler) DeletePostById(c *gin.Context) {
 	post, err := queries.FindPostById(ctx, int32(postId))
 	utils.CheckGinError(err, c)
 
-	if userId != post.UserID || category.(string) != auth.CategoryAdmin {
+	if userId != post.UserID && category.(string) != auth.CategoryAdmin {
 		c.JSON(401, gin.H{
 			"message": "this post is not yours",
 		})
@@ -213,7 +213,7 @@ func (ph *DefaultPostHandler) DeletePostById(c *gin.Context) {
 	}
 
 	if len(post.ImagePath.String) != 0 {
-		err = os.Remove(post.ImagePath.String)
+		err := os.Remove(post.ImagePath.String)
 		utils.CheckGinError(err, c)
 	}
 
