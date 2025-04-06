@@ -11,6 +11,23 @@ class InteractionService {
     return json;
   }
 
+  async add(postId: number, score: number) {
+    const req = await fetch(this.baseUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ postId, score }),
+      credentials: "include",
+    });
+
+    if (req.status !== 200) {
+      throw new Error("Could not add vote");
+    }
+
+    const json = await req.json();
+
+    return json;
+  }
+
   async addPositive(postId: number) {
     const req = await fetch(this.baseUrl, {
       method: "POST",

@@ -46,15 +46,15 @@ export function Sidebar() {
   return (
     <div
       className={clsx(
-        "max-md:absolute max-md:h-full flex duration-100",
-        !open && "max-md:-left-64 pointer-events-none",
+        "max-md:absolute flex duration-100 h-full",
+        !open && "max-md:-left-64 max-md:pointer-events-none",
         open && "max-md:left-0"
       )}
     >
       <div
         className={clsx(
           "w-64 bg-primary-500 flex flex-col justify-between",
-          "h-full z-20"
+          "h-full z-20 sticky top-0"
         )}
       >
         <div className={clsx("flex flex-col items-center gap-2 p-2")}>

@@ -22,7 +22,7 @@ export function MiniProfile({ id }: Props) {
       className={clsx("flex gap-4 items-center", "text-text-200 select-none")}
     >
       <ProfilePicture imagePath={user.imagePath} />
-      <span className="whitespace-pre-wrap break-words relative">
+      <span className="whitespace-pre-wrap break-all relative">
         {user.displayName}
       </span>
     </div>

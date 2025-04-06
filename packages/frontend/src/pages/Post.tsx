@@ -37,22 +37,26 @@ export function PostPage() {
   }
 
   return (
-    <div className={clsx("p-2 pt-18 flex flex-col gap-2")}>
+    <div
+      className={clsx(
+        "p-2 pt-18 flex flex-col gap-2 justify-center items-center w-full"
+      )}
+    >
       <Card>
         <MiniProfile id={post.userId} />
       </Card>
       <Card className={clsx("flex flex-col gap-2")}>
-        <p className="break-words whitespace-pre-wrap relative text-text-100">
+        <p className="break-all whitespace-pre-wrap relative text-text-100">
           {post.body}
         </p>
         {!!post.source && (
-          <p className="break-words whitespace-pre-wrap relative text-text-200">
+          <p className="break-all whitespace-pre-wrap relative text-text-200">
             {`${t("source")}: ${post.source}`}
           </p>
         )}
         {!!post.imagePath && (
           <img
-            className="rounded-lg"
+            className="rounded-lg max-w-2xl w-full"
             src={`/api/v1/image/${post.imagePath}`}
             alt={t("postImage")}
           />

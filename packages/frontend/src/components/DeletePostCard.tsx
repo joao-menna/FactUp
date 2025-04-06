@@ -53,7 +53,7 @@ export function DeletePostCard({ post }: Props) {
   }
 
   return (
-    <Card>
+    <Card className="w-full max-w-2xl">
       <Button
         onClick={handleClickDeletePost}
         className={clsx("w-full bg-accent-500 hover:bg-accent-500/80")}

@@ -28,5 +28,11 @@
   "couldNotDeletePost": "Não foi possível deletar o post!",
   "youNeedToInputABodyOrImage": "Você precisa colocar um corpo e/ou imagem no post!",
   "pressAgainToConfirmDeletion": "Pressione novamente para confirmar a deleção",
-  "loading": "Carregando"
+  "loading": "Carregando",
+  "isThisTheEnd": "Isso é... o fim?",
+  "iThinkItIs": "Eu acho que é :(",
+  "view": "Ver",
+  "like": "Curtir",
+  "itsFake": "É falso!",
+  "itsJoking": "É piada!"
 }

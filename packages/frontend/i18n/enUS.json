@@ -28,5 +28,11 @@
   "couldNotDeletePost": "Couldn't delete post!",
   "youNeedToInputABodyOrImage": "You must input a body and/or image to post!",
   "pressAgainToConfirmDeletion": "Press again to confirm deletion",
-  "loading": "Loading"
+  "loading": "Loading",
+  "isThisTheEnd": "Is this... the end?",
+  "iThinkItIs": "I think it is :(",
+  "view": "View",
+  "like": "Like",
+  "itsFake": "It's fake!",
+  "itsJoking": "It's joking!"
 }
