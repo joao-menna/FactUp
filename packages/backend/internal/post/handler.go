@@ -213,7 +213,8 @@ func (ph *DefaultPostHandler) DeletePostById(c *gin.Context) {
 	}
 
 	if len(post.ImagePath.String) != 0 {
-		os.Remove(post.ImagePath.String)
+		err = os.Remove(post.ImagePath.String)
+		utils.CheckGinError(err, c)
 	}
 
 	err = queries.DeletePostById(ctx, int32(postId))
