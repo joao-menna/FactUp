@@ -6,6 +6,7 @@ import (
 	"backend/orm"
 	"bytes"
 	"context"
+	"fmt"
 	"image"
 	_ "image/gif"
 	_ "image/jpeg"
@@ -15,6 +16,7 @@ import (
 	"github.com/chai2010/webp"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "golang.org/x/image/webp"
 )
@@ -59,6 +61,24 @@ func (ih *DefaultImageHandler) UploadImage(c *gin.Context) {
 	defer conn.Release()
 
 	queries := orm.New(conn)
+
+	images, err := queries.GetImagePostedByUserId(ctx, userId.(int32))
+	utils.CheckGinError(err, c)
+
+	for _, i := range images {
+		imagePath := fmt.Sprintf("images/%s.webp", i.ImagePath)
+		postsWithImage, err := queries.FindPostsByImagePath(ctx, pgtype.Text{String: imagePath, Valid: true})
+		utils.CheckGinError(err, c)
+
+		if len(postsWithImage) == 0 {
+			err := queries.DeleteImageById(ctx, i.ID)
+			utils.CheckGinError(err, c)
+
+			err = os.Remove(imagePath)
+			utils.CheckGinError(err, c)
+		}
+	}
+
 	totalInDay, err := queries.GetImagePostedInDayByUserId(ctx, userId.(int32))
 	utils.CheckGinError(err, c)
 

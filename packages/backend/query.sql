@@ -90,6 +90,11 @@ SELECT COUNT(*) AS postCount
 FROM "post"
 WHERE DATE("created_at") = CURRENT_DATE AND user_id = $1;
 
+-- name: FindPostsByImagePath :many
+SELECT *
+FROM "post"
+WHERE image_path = $1;
+
 -- name: FindPostById :one
 SELECT *
 FROM "post"
@@ -107,7 +112,7 @@ LIMIT $2;
 SELECT *
 FROM "post"
 WHERE "type" = $1
-ORDER BY created_at DESC
+ORDER BY id DESC
 LIMIT $2
 OFFSET $3;
 
@@ -149,6 +154,11 @@ WHERE post_id = $1 AND user_id = $2;
 
 -- ########## IMAGES ##########
 
+-- name: GetImagePostedByUserId :many
+SELECT *
+FROM "image"
+WHERE "user_id" = $1;
+
 -- name: GetImagePostedInDayByUserId :one
 SELECT COUNT(*) AS totalImages
 FROM "image"
@@ -165,3 +175,7 @@ LIMIT 1;
 INSERT INTO "image" (user_id, image_path)
 VALUES ($1, $2)
 RETURNING *;
+
+-- name: DeleteImageById :exec
+DELETE FROM "image"
+WHERE id = $1;

@@ -44,6 +44,16 @@ func (q *Queries) DeleteAllUserPosts(ctx context.Context, userID int32) error {
 	return err
 }
 
+const deleteImageById = `-- name: DeleteImageById :exec
+DELETE FROM "image"
+WHERE id = $1
+`
+
+func (q *Queries) DeleteImageById(ctx context.Context, id int32) error {
+	_, err := q.db.Exec(ctx, deleteImageById, id)
+	return err
+}
+
 const deletePostById = `-- name: DeletePostById :exec
 DELETE FROM "post"
 WHERE id = $1
@@ -152,7 +162,7 @@ const findPagedPosts = `-- name: FindPagedPosts :many
 SELECT id, type, user_id, body, source, image_path, created_at
 FROM "post"
 WHERE "type" = $1
-ORDER BY created_at DESC
+ORDER BY id DESC
 LIMIT $2
 OFFSET $3
 `
@@ -211,6 +221,40 @@ func (q *Queries) FindPostById(ctx context.Context, id int32) (Post, error) {
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const findPostsByImagePath = `-- name: FindPostsByImagePath :many
+SELECT id, type, user_id, body, source, image_path, created_at
+FROM "post"
+WHERE image_path = $1
+`
+
+func (q *Queries) FindPostsByImagePath(ctx context.Context, imagePath pgtype.Text) ([]Post, error) {
+	rows, err := q.db.Query(ctx, findPostsByImagePath, imagePath)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Post
+	for rows.Next() {
+		var i Post
+		if err := rows.Scan(
+			&i.ID,
+			&i.Type,
+			&i.UserID,
+			&i.Body,
+			&i.Source,
+			&i.ImagePath,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const findPostsByUserId = `-- name: FindPostsByUserId :many
@@ -376,15 +420,46 @@ func (q *Queries) FindUserByProviderUserId(ctx context.Context, arg FindUserByPr
 	return i, err
 }
 
-const getImagePostedInDayByUserId = `-- name: GetImagePostedInDayByUserId :one
+const getImagePostedByUserId = `-- name: GetImagePostedByUserId :many
 
+SELECT id, user_id, image_path, created_at
+FROM "image"
+WHERE "user_id" = $1
+`
+
+// ########## IMAGES ##########
+func (q *Queries) GetImagePostedByUserId(ctx context.Context, userID int32) ([]Image, error) {
+	rows, err := q.db.Query(ctx, getImagePostedByUserId, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Image
+	for rows.Next() {
+		var i Image
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.ImagePath,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getImagePostedInDayByUserId = `-- name: GetImagePostedInDayByUserId :one
 SELECT COUNT(*) AS totalImages
 FROM "image"
 WHERE "user_id" = $1
     AND DATE("created_at") = CURRENT_DATE
 `
 
-// ########## IMAGES ##########
 func (q *Queries) GetImagePostedInDayByUserId(ctx context.Context, userID int32) (int64, error) {
 	row := q.db.QueryRow(ctx, getImagePostedInDayByUserId, userID)
 	var totalimages int64
