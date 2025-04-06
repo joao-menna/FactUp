@@ -158,6 +158,30 @@ func (q *Queries) FindImageByImagePath(ctx context.Context, imagePath string) (I
 	return i, err
 }
 
+const findInteractionByUserIdAndPostId = `-- name: FindInteractionByUserIdAndPostId :one
+SELECT id, post_id, user_id, score
+FROM "user_interaction"
+WHERE post_id = $1 AND user_id = $2
+LIMIT 1
+`
+
+type FindInteractionByUserIdAndPostIdParams struct {
+	PostID int32 `json:"postId"`
+	UserID int32 `json:"userId"`
+}
+
+func (q *Queries) FindInteractionByUserIdAndPostId(ctx context.Context, arg FindInteractionByUserIdAndPostIdParams) (UserInteraction, error) {
+	row := q.db.QueryRow(ctx, findInteractionByUserIdAndPostId, arg.PostID, arg.UserID)
+	var i UserInteraction
+	err := row.Scan(
+		&i.ID,
+		&i.PostID,
+		&i.UserID,
+		&i.Score,
+	)
+	return i, err
+}
+
 const findPagedPosts = `-- name: FindPagedPosts :many
 SELECT id, type, user_id, body, source, image_path, created_at
 FROM "post"

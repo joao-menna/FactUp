@@ -8,6 +8,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -109,6 +110,21 @@ func (uih *DefaultUserInteractionHandler) Add(c *gin.Context) {
 	queries := orm.New(conn)
 
 	ctx := context.Background()
+
+	_, err = queries.FindInteractionByUserIdAndPostId(ctx, orm.FindInteractionByUserIdAndPostIdParams{
+		PostID: int32(body.PostID),
+		UserID: userId.(int32),
+	})
+
+	if err != pgx.ErrNoRows {
+		err = queries.DeleteUserInteraction(ctx, orm.DeleteUserInteractionParams{
+			PostID: int32(body.PostID),
+			UserID: userId.(int32),
+		})
+		utils.CheckGinError(err, c)
+	} else if err != nil {
+		utils.CheckGinError(err, c)
+	}
 
 	_, err = queries.InsertUserInteraction(ctx, orm.InsertUserInteractionParams{
 		PostID: int32(body.PostID),

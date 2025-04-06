@@ -141,6 +141,12 @@ SELECT SUM("score") AS totalScore
 FROM "user_interaction"
 WHERE post_id = $1;
 
+-- name: FindInteractionByUserIdAndPostId :one
+SELECT *
+FROM "user_interaction"
+WHERE post_id = $1 AND user_id = $2
+LIMIT 1;
+
 -- name: InsertUserInteraction :one
 INSERT INTO "user_interaction" (post_id, user_id, score)
 VALUES ($1, $2, $3)
