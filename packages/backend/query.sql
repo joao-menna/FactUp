@@ -103,6 +103,14 @@ WHERE "type" = $1
 ORDER BY RANDOM()
 LIMIT $2;
 
+-- name: FindPagedPosts :many
+SELECT *
+FROM "post"
+WHERE "type" = $1
+ORDER BY created_at DESC
+LIMIT $2
+OFFSET $3;
+
 -- name: FindPostsByUserId :many
 SELECT *
 FROM "post"

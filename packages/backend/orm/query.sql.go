@@ -148,6 +148,49 @@ func (q *Queries) FindImageByImagePath(ctx context.Context, imagePath string) (I
 	return i, err
 }
 
+const findPagedPosts = `-- name: FindPagedPosts :many
+SELECT id, type, user_id, body, source, image_path, created_at
+FROM "post"
+WHERE "type" = $1
+ORDER BY created_at DESC
+LIMIT $2
+OFFSET $3
+`
+
+type FindPagedPostsParams struct {
+	Type   string `json:"type"`
+	Limit  int32  `json:"limit"`
+	Offset int32  `json:"offset"`
+}
+
+func (q *Queries) FindPagedPosts(ctx context.Context, arg FindPagedPostsParams) ([]Post, error) {
+	rows, err := q.db.Query(ctx, findPagedPosts, arg.Type, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Post
+	for rows.Next() {
+		var i Post
+		if err := rows.Scan(
+			&i.ID,
+			&i.Type,
+			&i.UserID,
+			&i.Body,
+			&i.Source,
+			&i.ImagePath,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const findPostById = `-- name: FindPostById :one
 SELECT id, type, user_id, body, source, image_path, created_at
 FROM "post"

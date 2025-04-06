@@ -14,6 +14,7 @@ import (
 
 type PostHandler interface {
 	FindRandom(c *gin.Context)
+	FindPaged(c *gin.Context)
 	FindById(c *gin.Context)
 	FindAllByUser(c *gin.Context)
 	InsertPost(c *gin.Context)
@@ -60,6 +61,39 @@ func (ph *DefaultPostHandler) FindRandom(c *gin.Context) {
 	posts, err := queries.FindRandomPosts(ctx, orm.FindRandomPostsParams{
 		Type:  postType,
 		Limit: int32(limit),
+	})
+
+	utils.CheckGinError(err, c)
+
+	c.JSON(200, posts)
+}
+
+func (ph *DefaultPostHandler) FindPaged(c *gin.Context) {
+	postType := c.Query("type")
+	err := utils.ValidatePostType(postType)
+	utils.CheckGinError(err, c)
+
+	limitStr := c.Query("limit")
+	limit, err := utils.ParsePostLimit(limitStr)
+	utils.CheckGinError(err, c)
+
+	pageStr := c.Query("page")
+	page, err := utils.ParseQueryId(pageStr)
+	utils.CheckGinError(err, c)
+
+	offset := utils.GetPostOffset(limit, page)
+
+	ctx := context.Background()
+
+	conn := ph.getConn(c)
+	defer conn.Release()
+
+	queries := orm.New(conn)
+
+	posts, err := queries.FindPagedPosts(ctx, orm.FindPagedPostsParams{
+		Type:   postType,
+		Limit:  int32(limit),
+		Offset: int32(offset),
 	})
 
 	utils.CheckGinError(err, c)

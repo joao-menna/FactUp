@@ -13,6 +13,7 @@ func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
 	ph := NewDefaultPostHandler(dbPool)
 
 	r.GET("single/:id", ph.FindById)
+	r.GET("multiple", ph.FindRandom)
 	r.GET("multiple/random", ph.FindRandom)
 	r.GET("multiple/user/:userId", ph.FindAllByUser)
 	r.POST("", middleware.AuthRequired(dbPool), ph.InsertPost)
