@@ -147,6 +147,16 @@ FROM "user_interaction"
 WHERE post_id = $1 AND user_id = $2
 LIMIT 1;
 
+-- name: FindInteractionByUserIdAndMultiplePostIds :many
+SELECT *
+FROM "user_interaction"
+WHERE user_id = $1 AND post_id = ANY($2::int[]);
+
+-- name: UpdateUserInteraction :exec
+UPDATE "user_interaction"
+SET score = $1
+WHERE post_id = $2 AND user_id = $3;
+
 -- name: InsertUserInteraction :one
 INSERT INTO "user_interaction" (post_id, user_id, score)
 VALUES ($1, $2, $3)

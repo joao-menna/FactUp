@@ -158,6 +158,42 @@ func (q *Queries) FindImageByImagePath(ctx context.Context, imagePath string) (I
 	return i, err
 }
 
+const findInteractionByUserIdAndMultiplePostIds = `-- name: FindInteractionByUserIdAndMultiplePostIds :many
+SELECT id, post_id, user_id, score
+FROM "user_interaction"
+WHERE user_id = $1 AND post_id = ANY($2::int[])
+`
+
+type FindInteractionByUserIdAndMultiplePostIdsParams struct {
+	UserID  int32   `json:"userId"`
+	Column2 []int32 `json:"column2"`
+}
+
+func (q *Queries) FindInteractionByUserIdAndMultiplePostIds(ctx context.Context, arg FindInteractionByUserIdAndMultiplePostIdsParams) ([]UserInteraction, error) {
+	rows, err := q.db.Query(ctx, findInteractionByUserIdAndMultiplePostIds, arg.UserID, arg.Column2)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []UserInteraction
+	for rows.Next() {
+		var i UserInteraction
+		if err := rows.Scan(
+			&i.ID,
+			&i.PostID,
+			&i.UserID,
+			&i.Score,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const findInteractionByUserIdAndPostId = `-- name: FindInteractionByUserIdAndPostId :one
 SELECT id, post_id, user_id, score
 FROM "user_interaction"
@@ -760,5 +796,22 @@ type UpdateUserParams struct {
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
 	_, err := q.db.Exec(ctx, updateUser, arg.DisplayName, arg.ImagePath, arg.ID)
+	return err
+}
+
+const updateUserInteraction = `-- name: UpdateUserInteraction :exec
+UPDATE "user_interaction"
+SET score = $1
+WHERE post_id = $2 AND user_id = $3
+`
+
+type UpdateUserInteractionParams struct {
+	Score  int16 `json:"score"`
+	PostID int32 `json:"postId"`
+	UserID int32 `json:"userId"`
+}
+
+func (q *Queries) UpdateUserInteraction(ctx context.Context, arg UpdateUserInteractionParams) error {
+	_, err := q.db.Exec(ctx, updateUserInteraction, arg.Score, arg.PostID, arg.UserID)
 	return err
 }

@@ -5,6 +5,7 @@ import (
 	"backend/internal/utils"
 	"backend/orm"
 	"context"
+	"errors"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,7 @@ import (
 type UserInteractionHandler interface {
 	CheckPostShouldDelete(postId int)
 	GetByPostId(c *gin.Context)
+	GetForMultipleByUserId(c *gin.Context)
 	Add(c *gin.Context)
 	Remove(c *gin.Context)
 }
@@ -30,10 +32,10 @@ func NewDefaultUserInteractionHandler(dbPool *pgxpool.Pool) *DefaultUserInteract
 	}
 }
 
-func (ah *DefaultUserInteractionHandler) getConn(c ...*gin.Context) *pgxpool.Conn {
+func (uih *DefaultUserInteractionHandler) getConn(c ...*gin.Context) *pgxpool.Conn {
 	ctx := context.Background()
 
-	conn, err := ah.dbPool.Acquire(ctx)
+	conn, err := uih.dbPool.Acquire(ctx)
 
 	if len(c) > 0 {
 		utils.CheckGinError(err, c[0])
@@ -87,6 +89,38 @@ func (uih *DefaultUserInteractionHandler) GetByPostId(c *gin.Context) {
 	})
 }
 
+func (uih *DefaultUserInteractionHandler) GetForMultipleByUserId(c *gin.Context) {
+	userId, exists := c.Get(auth.UserID)
+	if !exists {
+		c.JSON(401, gin.H{
+			"message": "user not logged in",
+		})
+		return
+	}
+
+	postIdsStr := c.QueryArray("postId")
+
+	postIds, err := utils.StringSliceToIntSlice(postIdsStr)
+	utils.CheckGinError(err, c)
+
+	postIds32 := utils.IntSliceToInt32Slice(postIds)
+
+	conn := uih.getConn(c)
+	defer conn.Release()
+
+	queries := orm.New(conn)
+
+	ctx := context.Background()
+
+	uis, err := queries.FindInteractionByUserIdAndMultiplePostIds(ctx, orm.FindInteractionByUserIdAndMultiplePostIdsParams{
+		UserID:  userId.(int32),
+		Column2: postIds32,
+	})
+	utils.CheckGinError(err, c)
+
+	c.JSON(200, uis)
+}
+
 func (uih *DefaultUserInteractionHandler) Add(c *gin.Context) {
 	var body struct {
 		PostID int `json:"postId"`
@@ -104,6 +138,9 @@ func (uih *DefaultUserInteractionHandler) Add(c *gin.Context) {
 	err := c.ShouldBindJSON(&body)
 	utils.CheckGinError(err, c)
 
+	err = utils.ValidateScore(body.Score)
+	utils.CheckGinError(err, c)
+
 	conn := uih.getConn(c)
 	defer conn.Release()
 
@@ -116,22 +153,21 @@ func (uih *DefaultUserInteractionHandler) Add(c *gin.Context) {
 		UserID: userId.(int32),
 	})
 
-	if err != pgx.ErrNoRows {
-		err = queries.DeleteUserInteraction(ctx, orm.DeleteUserInteractionParams{
+	if errors.Is(err, pgx.ErrNoRows) {
+		_, err = queries.InsertUserInteraction(ctx, orm.InsertUserInteractionParams{
 			PostID: int32(body.PostID),
 			UserID: userId.(int32),
+			Score:  int16(body.Score),
 		})
 		utils.CheckGinError(err, c)
-	} else if err != nil {
+	} else {
+		err := queries.UpdateUserInteraction(ctx, orm.UpdateUserInteractionParams{
+			PostID: int32(body.PostID),
+			UserID: userId.(int32),
+			Score:  int16(body.Score),
+		})
 		utils.CheckGinError(err, c)
 	}
-
-	_, err = queries.InsertUserInteraction(ctx, orm.InsertUserInteractionParams{
-		PostID: int32(body.PostID),
-		UserID: userId.(int32),
-		Score:  int16(body.Score),
-	})
-	utils.CheckGinError(err, c)
 
 	go uih.CheckPostShouldDelete(body.PostID)
 
@@ -149,7 +185,7 @@ func (uih *DefaultUserInteractionHandler) Remove(c *gin.Context) {
 		return
 	}
 
-	postIdStr := c.Param("postId")
+	postIdStr := c.Query("postId")
 	postId, err := utils.ParseQueryId(postIdStr)
 	utils.CheckGinError(err, c)
 
