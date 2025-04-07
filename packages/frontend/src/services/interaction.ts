@@ -1,3 +1,10 @@
+export interface Interaction {
+  id: number;
+  postId: number;
+  userId: number;
+  score: number;
+}
+
 class InteractionService {
   baseUrl = `${import.meta.env.VITE_BACKEND_BASE_URL ?? ""}/api/v1/interaction`;
 
@@ -7,6 +14,16 @@ class InteractionService {
     });
 
     const json = await req.json();
+
+    return json;
+  }
+
+  async getForUserId(postIds: number[]) {
+    const req = await fetch(`${this.baseUrl}?postId=${postIds.join(",")}`, {
+      credentials: "include",
+    });
+
+    const json = (await req.json()) as Interaction[];
 
     return json;
   }
