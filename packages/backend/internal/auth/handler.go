@@ -101,7 +101,7 @@ func (ah *DefaultAuthHandler) FullfillLogin(c *gin.Context, dbConn *pgxpool.Conn
 	utils.CheckGinError(err, c)
 
 	domain := ep.GetBackendDomain()
-	maxAge := 24 * 60 * 60 * 1000
+	maxAge := 24 * 60 * 60
 	bearerToken := "Bearer " + token
 
 	c.SetCookie(TokenCookie, bearerToken, maxAge, "/", domain, true, false)

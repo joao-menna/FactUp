@@ -30,7 +30,7 @@ func NewJwtAuthTokenManager(environmentProvider EnvironmentProvider) *JwtAuthTok
 }
 
 func (m *JwtAuthTokenManager) CreateToken(user orm.User) (string, error) {
-	exp := time.Now().Add(time.Duration(24) * time.Hour)
+	exp := time.Now().Add(24 * time.Hour)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &TokenContent{
 		UserID: user.ID,

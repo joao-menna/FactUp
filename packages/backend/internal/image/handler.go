@@ -75,7 +75,9 @@ func (ih *DefaultImageHandler) UploadImage(c *gin.Context) {
 			utils.CheckGinError(err, c)
 
 			err = os.Remove(imagePath)
-			utils.CheckGinError(err, c)
+			if err != nil && !os.IsNotExist(err) {
+				utils.CheckGinError(err, c)
+			}
 		}
 	}
 
