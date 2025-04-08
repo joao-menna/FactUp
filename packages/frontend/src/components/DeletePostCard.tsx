@@ -8,6 +8,7 @@ import { useNavigate } from "react-router";
 import { useDebounce } from "react-use";
 import { useState } from "react";
 import { clsx } from "clsx/lite";
+import { FaTrash } from "react-icons/fa";
 
 interface Props {
   post: Post;
@@ -53,13 +54,19 @@ export function DeletePostCard({ post }: Props) {
   }
 
   return (
-    <Card className="w-full max-w-2xl">
+    <Card>
       <Button
         onClick={handleClickDeletePost}
-        className={clsx("w-full bg-accent-500 hover:bg-accent-500/80")}
+        className={clsx(
+          "flex h-full bg-accent-500 hover:bg-accent-500/80",
+          "items-center justify-between gap-2"
+        )}
         disabled={mutation.isPending}
       >
-        {singlePressed ? t("pressAgainToConfirmDeletion") : t("deletePost")}
+        <span>
+          {singlePressed ? t("pressAgainToConfirmDeletion") : t("deletePost")}
+        </span>
+        <FaTrash className="text-lg" />
       </Button>
       <p className="text-center">{error}</p>
     </Card>

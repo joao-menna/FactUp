@@ -93,10 +93,10 @@ export function PostListPage({ type }: Props) {
     <div
       className={clsx(
         "p-2 pt-18 flex flex-col w-full justify-between",
-        "h-full gap-8"
+        "h-full gap-8 overflow-x-hidden items-center"
       )}
     >
-      <div className={clsx("w-full max-w-2xl h-full overflow-x-hidden")}>
+      <div className={clsx("w-full max-w-2xl h-full")}>
         <AnimatePresence>
           <motion.div
             className={clsx("flex flex-col w-full gap-8 h-full justify-center")}
@@ -131,7 +131,12 @@ export function PostListPage({ type }: Props) {
           </motion.div>
         </AnimatePresence>
       </div>
-      <div className={clsx("flex items-center justify-center gap-8 h-32")}>
+      <div
+        className={clsx(
+          "flex items-center justify-center gap-8 h-32",
+          "w-full max-w-2xl"
+        )}
+      >
         <Button
           onClick={goToPreviousPage}
           className={clsx(

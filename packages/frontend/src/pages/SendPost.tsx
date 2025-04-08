@@ -111,133 +111,141 @@ export function SendPostPage() {
   };
 
   return (
-    <div className="flex flex-col justify-between h-full container">
-      <div className={clsx("flex flex-col gap-2 p-2 pt-18")}>
-        <div className="flex gap-2">
-          <Button
-            onClick={() => handleChangeForm("fact")}
-            className={clsx(
-              "w-full h-16",
-              selectedForm === "fact"
-                ? "bg-accent-400 hover:bg-accent-400/80"
-                : "bg-accent-500 hover:bg-accent-500/80"
-            )}
-          >
-            {t("fact")}
-          </Button>
-          <Button
-            onClick={() => handleChangeForm("saying")}
-            className={clsx(
-              "w-full h-16",
-              selectedForm === "saying"
-                ? "bg-accent-400 hover:bg-accent-400/80"
-                : "bg-accent-500 hover:bg-accent-500/80"
-            )}
-          >
-            {t("saying")}
-          </Button>
-        </div>
-        <div></div>
-        <div>
-          <div className={clsx("flex justify-between")}>
-            <label className={clsx("text-text-200 text-lg")}>
-              {selectedForm === "fact" ? t("fact") : t("saying")}
-            </label>
-            <span className="text-lg text-text-100">{280 - body.length}</span>
+    <div className={clsx("flex justify-center")}>
+      <div
+        className={clsx(
+          "flex flex-col justify-between size-full",
+          "max-w-2xl relative"
+        )}
+      >
+        <div className={clsx("flex flex-col gap-2 p-2 pt-18")}>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => handleChangeForm("fact")}
+              className={clsx(
+                "w-full h-16",
+                selectedForm === "fact"
+                  ? "bg-accent-400 hover:bg-accent-400/80"
+                  : "bg-accent-500 hover:bg-accent-500/80"
+              )}
+            >
+              {t("fact")}
+            </Button>
+            <Button
+              onClick={() => handleChangeForm("saying")}
+              className={clsx(
+                "w-full h-16",
+                selectedForm === "saying"
+                  ? "bg-accent-400 hover:bg-accent-400/80"
+                  : "bg-accent-500 hover:bg-accent-500/80"
+              )}
+            >
+              {t("saying")}
+            </Button>
           </div>
-          <TextAreaAutosize
-            minRows={3}
-            maxLength={280}
-            value={body ?? ""}
-            onChange={(e) => setBody(e.target.value)}
-            className={clsx(
-              "w-full border-2 border-accent-500 bg-primary-800",
-              "rounded-lg p-1 outline-0 text-text-100"
-            )}
-          />
-        </div>
-        {selectedForm === "fact" && (
           <div>
-            <div className="flex justify-between">
+            <div className={clsx("flex justify-between")}>
               <label className={clsx("text-text-200 text-lg")}>
-                {t("source")}
+                {selectedForm === "fact" ? t("fact") : t("saying")}
               </label>
-              <span className="text-lg text-text-100">
-                {80 - (source?.length ?? 0)}
-              </span>
+              <span className="text-lg text-text-100">{280 - body.length}</span>
             </div>
-            <TextField
-              type="text"
-              maxLength={80}
-              value={source ?? ""}
-              onChange={(e) => setSource(e.target.value)}
+            <TextAreaAutosize
+              minRows={3}
+              maxLength={280}
+              value={body ?? ""}
+              onChange={(e) => setBody(e.target.value)}
               className={clsx(
                 "w-full border-2 border-accent-500 bg-primary-800",
                 "rounded-lg p-1 outline-0 text-text-100"
               )}
             />
           </div>
-        )}
-        {currentDataUrl ? (
-          <div className="flex flex-col">
-            <Button
-              onClick={handleClearImage}
-              className={clsx(
-                "top-0 right-0 p-2 bg-accent-500",
-                "hover:bg-accent-500/80 flex items-center",
-                "gap-2 justify-between rounded-b-none"
-              )}
-            >
-              <FaRegCircleXmark className="text-2xl" />
-              <span className="text-lg">{t("removeImage")}</span>
-              <FaRegCircleXmark className="text-2xl" />
-            </Button>
-            <img
-              className={clsx("rounded-b-lg")}
-              src={currentDataUrl}
-              alt={t("imageToSend")}
-            />
-          </div>
-        ) : (
-          <div
-            {...getRootProps()}
-            className={clsx(
-              "w-full border-2 flex flex-col justify-between rounded-lg",
-              "border-accent-500 bg-primary-800 gap-2",
-              "items-center"
-            )}
-          >
-            <input {...getInputProps()} />
-            <div
-              className={clsx(
-                "flex items-center justify-between text-text-200 size-full p-2",
-                "bg-accent-500 hover:bg-accent-500/80 gap-4"
-              )}
-            >
-              <FaRegImage className="text-lg" />
-              <p className="text-text-200">
-                {isDragActive
-                  ? t("dropTheImageHere")
-                  : t("dragYourImageHereOrClickToPickOne")}
-              </p>
+          {selectedForm === "fact" && (
+            <div>
+              <div className="flex justify-between">
+                <label className={clsx("text-text-200 text-lg")}>
+                  {t("source")}
+                </label>
+                <span className="text-lg text-text-100">
+                  {80 - (source?.length ?? 0)}
+                </span>
+              </div>
+              <TextField
+                type="text"
+                maxLength={80}
+                value={source ?? ""}
+                onChange={(e) => setSource(e.target.value)}
+                className={clsx(
+                  "w-full border-2 border-accent-500 bg-primary-800",
+                  "rounded-lg p-1 outline-0 text-text-100"
+                )}
+              />
             </div>
-          </div>
-        )}
-      </div>
-      <div
-        className={clsx(
-          "absolute top-0 right-0 flex gap-2 justify-end",
-          "items-center break-words whitespace-pre-wrap"
-        )}
-      >
-        <p className="text-red-300 w-48">{error}</p>
-        <Button
-          onClick={handleSendPost}
-          className={clsx("bg-accent-500 hover:bg-accent-500/80 m-2 h-14 w-24")}
-          disabled={isMutationLoading()}
+          )}
+          {currentDataUrl ? (
+            <div className="flex flex-col">
+              <Button
+                onClick={handleClearImage}
+                className={clsx(
+                  "top-0 right-0 p-2 bg-accent-500",
+                  "hover:bg-accent-500/80 flex items-center",
+                  "gap-2 justify-between rounded-b-none"
+                )}
+              >
+                <FaRegCircleXmark className="text-2xl" />
+                <span className="text-lg">{t("removeImage")}</span>
+                <FaRegCircleXmark className="text-2xl" />
+              </Button>
+              <img
+                className={clsx("rounded-b-lg")}
+                src={currentDataUrl}
+                alt={t("imageToSend")}
+              />
+            </div>
+          ) : (
+            <div
+              {...getRootProps()}
+              className={clsx(
+                "w-full border-2 flex flex-col justify-between rounded-lg",
+                "border-accent-500 bg-primary-800 gap-2",
+                "items-center"
+              )}
+            >
+              <input {...getInputProps()} />
+              <div
+                className={clsx(
+                  "flex items-center justify-between text-text-200 size-full p-2",
+                  "bg-accent-500 hover:bg-accent-500/80 gap-4"
+                )}
+              >
+                <FaRegImage className="text-lg" />
+                <p className="text-text-200">
+                  {isDragActive
+                    ? t("dropTheImageHere")
+                    : t("dragYourImageHereOrClickToPickOne")}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+        <div
+          className={clsx(
+            "absolute top-0 right-0 flex gap-2 justify-end",
+            "items-center break-words whitespace-pre-wrap"
+          )}
         >
-          {isMutationLoading() ? t("loading") : t("post")}
-        </Button>
+          <p className="text-red-300 w-48">{error}</p>
+          <Button
+            onClick={handleSendPost}
+            className={clsx(
+              "bg-accent-500 hover:bg-accent-500/80 m-2 h-14 w-24"
+            )}
+            disabled={isMutationLoading()}
+          >
+            {isMutationLoading() ? t("loading") : t("post")}
+          </Button>
+        </div>
       </div>
     </div>
   );

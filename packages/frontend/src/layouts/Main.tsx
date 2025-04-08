@@ -3,9 +3,11 @@ import { Outlet } from "react-router";
 
 export function MainLayout() {
   return (
-    <div className="h-full bg-primary-900 md:flex">
+    <div className="h-full bg-primary-900 flex overflow-y-auto">
       <Sidebar />
-      <Outlet />
+      <div className="size-full">
+        <Outlet />
+      </div>
     </div>
   );
 }

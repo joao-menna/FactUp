@@ -13,6 +13,10 @@ class UserService {
       credentials: "include",
     });
 
+    if (req.status !== 200) {
+      throw new Error("could not get logged user");
+    }
+
     const json = (await req.json()) as User;
 
     return json;
@@ -22,6 +26,10 @@ class UserService {
     const req = await fetch(`${this.baseUrl}/${userId}`, {
       credentials: "include",
     });
+
+    if (req.status !== 200) {
+      throw new Error("could not get user by id");
+    }
 
     const json = (await req.json()) as User;
 

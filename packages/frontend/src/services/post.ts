@@ -93,6 +93,10 @@ class PostService {
       credentials: "include",
     });
 
+    if (req.status !== 200) {
+      throw new Error("could not delete post");
+    }
+
     const json = await req.json();
 
     return json;

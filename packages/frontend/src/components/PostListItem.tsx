@@ -41,16 +41,19 @@ export function PostListItem({ post, onClickCard, optionOpen: open }: Props) {
       className="w-full h-full max-h-40 relative"
     >
       <CardWithoutPadding onClick={handleClickCard} className="w-full h-40">
-        <div className={clsx("flex w-full h-full")}>
+        <div className={clsx("flex size-full")}>
           {!!post.imagePath && (
-            <img
-              className={clsx(
-                "rounded-l-lg size-40 object-cover text-text-200",
-                "select-none"
-              )}
-              src={`/api/v1/image/${post.imagePath}`}
-              alt={t("postImage")}
-            />
+            <div className={clsx("relative w-full max-w-40")}>
+              <img
+                className={clsx(
+                  "rounded-l-lg size-40 object-cover text-text-200",
+                  "select-none"
+                )}
+                src={`/api/v1/image/${post.imagePath}`}
+                alt={t("postImage")}
+              />
+              <div className={clsx("absolute size-40 inset-0")} />
+            </div>
           )}
           <div className={clsx("flex flex-col gap-2 p-2 w-full")}>
             <MiniCardProfile id={post.userId} />
