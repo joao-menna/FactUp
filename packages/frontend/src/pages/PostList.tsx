@@ -47,12 +47,19 @@ export function PostListPage({ type }: Props) {
       );
       return;
     }
-
-    if (page && page !== currentPageIndex) {
-      setCurrentPageIndex(page);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPageIndex]);
+
+  useEffect(() => {
+    const page = Number(searchParams.get("page"));
+
+    if (page === currentPageIndex) {
+      return;
+    }
+
+    setCurrentPageIndex(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const goToPreviousPage = () => {
     if (currentPageIndex > 0) {
