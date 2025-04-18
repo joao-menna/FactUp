@@ -19,6 +19,7 @@ type PostHandler interface {
 	FindAllByUser(c *gin.Context)
 	InsertPost(c *gin.Context)
 	DeletePostById(c *gin.Context)
+	RemainingPostsByUser(c *gin.Context)
 }
 
 type DefaultPostHandler struct {
@@ -256,5 +257,31 @@ func (ph *DefaultPostHandler) DeletePostById(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"message": "post deleted successfully",
+	})
+}
+
+func (ph *DefaultPostHandler) RemainingPostsByUser(c *gin.Context) {
+	userId, exists := c.Get(auth.UserID)
+	if !exists {
+		c.JSON(401, gin.H{
+			"message": "user not logged in",
+		})
+		return
+	}
+
+	ctx := context.Background()
+
+	conn := ph.getConn(c)
+	defer conn.Release()
+
+	queries := orm.New(conn)
+
+	count, err := queries.GetPostedCountByDay(ctx, userId.(int32))
+	utils.CheckGinError(err, c)
+
+	invertedCount := 3 - count
+
+	c.JSON(200, gin.H{
+		"remaining": invertedCount,
 	})
 }

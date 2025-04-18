@@ -124,7 +124,12 @@ func (ah *DefaultAuthHandler) LogInUser(c *gin.Context) {
 func (ah *DefaultAuthHandler) LogInUserCallback(c *gin.Context) {
 	gothic.GetProviderName = func(req *http.Request) (string, error) { return c.Param("provider"), nil }
 	user, err := gothic.CompleteUserAuth(c.Writer, c.Request)
-	utils.CheckGinError(err, c)
+	if err != nil {
+		ep := utils.NewDefaultEnvironmentProvider()
+		frontendUrl := fmt.Sprintf("%s/login", ep.GetBaseUrl())
+		c.Redirect(http.StatusTemporaryRedirect, frontendUrl)
+		return
+	}
 
 	session := sessions.Default(c)
 	session.Set("userID", user.UserID)

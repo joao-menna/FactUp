@@ -4,12 +4,15 @@ import { FaChevronUp } from "react-icons/fa";
 import { DropdownMenu } from "radix-ui";
 import { clsx } from "clsx/lite";
 import { MouseEvent } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function ProfileDropdown() {
+  const queryClient = useQueryClient();
   const { t } = useTranslation();
 
   const handleClickLogOut = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
+    queryClient.clear();
 
     const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL ?? "";
     location.href = `${baseUrl}/api/v1/auth/logout`;

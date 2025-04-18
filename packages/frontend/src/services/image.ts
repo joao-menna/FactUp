@@ -17,8 +17,12 @@ class ImageService {
       body,
     });
 
+    if (req.status === 413) {
+      throw new Error("image too large");
+    }
+
     if (req.status !== 200) {
-      throw new Error("Could not send image");
+      throw new Error("could not send image");
     }
 
     const json = (await req.json()) as PostImageOutput;

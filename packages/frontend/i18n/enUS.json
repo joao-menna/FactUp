@@ -34,5 +34,7 @@
   "view": "View",
   "like": "Like",
   "itsFake": "It's fake!",
-  "itsJoking": "It's joking!"
+  "itsJoking": "It's joking!",
+  "imageTooLarge": "Image too large!",
+  "youAreBannedFromApp": "You are banned from FactUp!"
 }

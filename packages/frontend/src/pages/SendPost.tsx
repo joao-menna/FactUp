@@ -1,7 +1,7 @@
 import { InsertPostInput, postService } from "services/post";
 import TextAreaAutosize from "react-textarea-autosize";
 import { TextField } from "lib/components/TextField";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FaRegCircleXmark } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import { Button } from "lib/components/Button";
@@ -9,10 +9,14 @@ import { imageService } from "services/image";
 import { useDropzone } from "react-dropzone";
 import { FaRegImage } from "react-icons/fa";
 import { useNavigate } from "react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { clsx } from "clsx/lite";
+import { useRemainingPosts } from "hooks/useRemainingPosts";
+import { POST, REMAINING } from "constants/queryKeys";
 
 type FormType = "fact" | "saying";
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
 const handleDrop = (
   acceptedFiles: File[],
@@ -40,18 +44,24 @@ export function SendPostPage() {
   const [source, setSource] = useState<string>();
   const [error, setError] = useState<string>("");
   const [body, setBody] = useState<string>("");
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (af) => handleDrop(af, setImageFile, setCurrentDataUrl),
-    accept: {
-      "image/gif": [".gif"],
-      "image/jpeg": [".jpg", ".jpeg"],
-      "image/png": [".png"],
-      "image/webp": [".webp"],
-    },
-  });
+  const { data: remainingPosts } = useRemainingPosts();
+
+  const { getRootProps, getInputProps, isDragReject, isDragActive } =
+    useDropzone({
+      onDrop: (af) => handleDrop(af, setImageFile, setCurrentDataUrl),
+      maxFiles: 1,
+      maxSize: MAX_IMAGE_SIZE,
+      accept: {
+        "image/gif": [".gif"],
+        "image/jpeg": [".jpg", ".jpeg"],
+        "image/png": [".png"],
+        "image/webp": [".webp"],
+      },
+    });
 
   const imageMutation = useMutation({
     mutationFn: async (image: Blob) => await imageService.send(image),
@@ -64,6 +74,21 @@ export function SendPostPage() {
   const isMutationLoading = () =>
     imageMutation.isPending || postMutation.isPending;
 
+  const getRemainingPosts = () =>
+    (remainingPosts ?? { remaining: 0 }).remaining;
+
+  const imageDragText = useMemo(() => {
+    if (isDragActive) {
+      return t("dropTheImageHere");
+    }
+
+    if (isDragReject) {
+      return t("imageTooLarge");
+    }
+
+    return t("dragYourImageHereOrClickToPickOne");
+  }, [t, isDragReject, isDragActive]);
+
   const handleChangeForm = (targetForm: "fact" | "saying") => {
     setSelectedForm(targetForm);
     setSource(undefined);
@@ -75,6 +100,11 @@ export function SendPostPage() {
 
     if (!body && !imageFile) {
       setError(t("youNeedToInputABodyOrImage"));
+      return;
+    }
+
+    if (!remainingPosts || !remainingPosts.remaining) {
+      setError(t("youReachedTheDailyLimit"));
       return;
     }
 
@@ -98,6 +128,12 @@ export function SendPostPage() {
         source,
         imagePath,
       });
+
+      if (remainingPosts) {
+        queryClient.setQueryData([REMAINING, POST], () => ({
+          count: remainingPosts?.remaining - 1,
+        }));
+      }
 
       navigate(`/p/${post.id}`);
     } catch {
@@ -220,11 +256,7 @@ export function SendPostPage() {
                 )}
               >
                 <FaRegImage className="text-lg" />
-                <p className="text-text-200">
-                  {isDragActive
-                    ? t("dropTheImageHere")
-                    : t("dragYourImageHereOrClickToPickOne")}
-                </p>
+                <p className="text-text-200">{imageDragText}</p>
               </div>
             </div>
           )}
@@ -241,9 +273,11 @@ export function SendPostPage() {
             className={clsx(
               "bg-accent-500 hover:bg-accent-500/80 m-2 h-14 w-24"
             )}
-            disabled={isMutationLoading()}
+            disabled={isMutationLoading() || !getRemainingPosts()}
           >
-            {isMutationLoading() ? t("loading") : t("post")}
+            {isMutationLoading()
+              ? t("loading")
+              : `${t("post")} (${getRemainingPosts() ?? 0})`}
           </Button>
         </div>
       </div>
