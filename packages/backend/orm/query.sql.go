@@ -321,6 +321,7 @@ const findPostsByUserId = `-- name: FindPostsByUserId :many
 SELECT id, type, user_id, body, source, image_path, created_at
 FROM "post"
 WHERE user_id = $1
+ORDER BY id DESC
 LIMIT $2
 OFFSET $3
 `

@@ -2,26 +2,29 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { AnimatePresence, PanInfo } from "motion/react";
 import { PostListItem } from "components/PostListItem";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import { Button } from "lib/components/Button";
 import { useEffect, useState } from "react";
 import { postService } from "services/post";
 import { motion } from "motion/react";
 import { clsx } from "clsx/lite";
+import { LIST, POST, USER } from "constants/queryKeys";
 
 interface Props {
-  type: "fact" | "saying";
+  type: "fact" | "saying" | "both";
+  forPage?: "user" | "postlist";
 }
 
 const PAGE_SIZE = 3;
 
-export function PostListPage({ type }: Props) {
+export function PostListPage({ type, forPage = "postlist" }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [postOptionOpen, setPostOptionOpen] = useState<number | null>(null);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(
     Number(searchParams.get("page") ?? "0")
   );
+  const { userId } = useParams() as { userId?: string };
   const { t } = useTranslation();
 
   const {
@@ -29,9 +32,20 @@ export function PostListPage({ type }: Props) {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: [type, currentPageIndex],
-    queryFn: async () =>
-      await postService.findPaged(type, PAGE_SIZE, currentPageIndex),
+    queryKey:
+      forPage === "postlist"
+        ? [type, currentPageIndex]
+        : [USER, POST, LIST, currentPageIndex],
+    queryFn:
+      forPage === "postlist"
+        ? async () =>
+            await postService.findPaged(type, PAGE_SIZE, currentPageIndex)
+        : async () =>
+            await postService.findPagedByUser(
+              Number(userId),
+              PAGE_SIZE,
+              currentPageIndex
+            ),
   });
 
   useEffect(() => {

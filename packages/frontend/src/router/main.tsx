@@ -23,6 +23,7 @@ export const mainRoutes: RouteObject[] = [
     children: [
       {
         path: ":userId",
+        element: <PostListPage type="both" forPage="user" />,
       },
     ],
   },

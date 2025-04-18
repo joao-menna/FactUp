@@ -36,5 +36,6 @@
   "itsFake": "It's fake!",
   "itsJoking": "It's joking!",
   "imageTooLarge": "Image too large!",
-  "youAreBannedFromApp": "You are banned from FactUp!"
+  "youAreBannedFromApp": "You are banned from FactUp!",
+  "anInternalErrorHasOccurred": "An internal error has occurred!"
 }

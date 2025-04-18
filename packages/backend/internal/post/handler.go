@@ -131,7 +131,7 @@ func (ph *DefaultPostHandler) FindAllByUser(c *gin.Context) {
 	utils.CheckGinError(err, c)
 
 	pageStr := c.Query("page")
-	page, err := utils.ParseQueryId(pageStr)
+	page, err := utils.ParsePage(pageStr)
 	utils.CheckGinError(err, c)
 
 	offset := utils.GetPostOffset(limit, page)

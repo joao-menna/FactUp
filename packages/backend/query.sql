@@ -120,6 +120,7 @@ OFFSET $3;
 SELECT *
 FROM "post"
 WHERE user_id = $1
+ORDER BY id DESC
 LIMIT $2
 OFFSET $3;
 
