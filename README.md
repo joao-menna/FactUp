@@ -36,14 +36,12 @@ Front-end:
 
 - SPA - Preferimos usar o formato SPA (single-page application) ao invés de SSR (server-side rendering) pois algumas coisas não funcionariam no formato SSR.
 - [TypeScript](https://www.typescriptlang.org/) - Linguagem de programação baseada no JavaScript, mas com tipos.
-- [Storybook](https://storybook.js.org/) - Desenvolver componentes isoladamente.
 - [Vite](https://vite.dev/) - Mais rápido app bundler no mercado.
 - [React](https://react.dev/) - Library para interfaces web de usuário.
 - [Radix UI](https://www.radix-ui.com/primitives) - Usado para os componentes mais elaborados.
 - [TailwindCSS](https://tailwindcss.com/) - Forma mais rápida e eficiente de criar CSS.
 - [React Router](https://reactrouter.com/) - Roteador de páginas para React.
 - [Tanstack Query](https://tanstack.com/query/latest) - Ferramenta de data-fetching e caching no client-side.
-- [React Slick](https://react-slick.neostack.com/) - Carrossel de elementos utilizado para o scroll da aplicação.
 
 Front-end (mobile):
 - Avaliar a criação de um front-end mobile em Flutter.
