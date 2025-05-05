@@ -4,7 +4,7 @@ services:
   proxy:
     container_name: factup_proxy
     image: nginx:latest
-    restart: on-failure
+    restart: always
     ports:
       - 443:443
     volumes:
@@ -21,7 +21,7 @@ services:
   postgres:
     container_name: factup_postgres
     image: postgres:17
-    restart: on-failure
+    restart: always
     environment:
       - POSTGRES_DB=factup
       - POSTGRES_USER=postgres
@@ -60,7 +60,7 @@ services:
 
   backend:
     container_name: factup_backend
-    restart: on-failure:3
+    restart: always
     build:
       context: ./packages/backend
       dockerfile: Dockerfile
@@ -81,7 +81,7 @@ services:
 
   dcmodder:
     container_name: factup_dcmodder
-    restart: on-failure:3
+    restart: always
     build:
       context: ./packages/dcmodder
       dockerfile: Dockerfile

@@ -8,6 +8,7 @@ import Skeleton from "react-loading-skeleton";
 import { Card } from "lib/components/Card";
 import { clsx } from "clsx/lite";
 import { useMemo } from "react";
+import { ScoreButtonsCard } from "components/ScoreButtonsCard";
 
 export function PostPage() {
   const { postId: postIdStr } = useParams();
@@ -69,6 +70,7 @@ export function PostPage() {
             />
           </Card>
         )}
+        <ScoreButtonsCard postId={postId} type={post.type} />
         <div className={clsx("flex justify-center w-full")}>
           <div className={clsx("flex flex-col gap-2 w-full max-w-lg")}>
             <Card>
