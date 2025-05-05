@@ -18,7 +18,7 @@ Infraestrutura:
 - [Docker](https://www.docker.com/) - Conteinerizar a aplicação, para fácil manuseio e padronização de ambiente.
 - [Docker Compose](https://docs.docker.com/compose/) - Orquestração de Contêineres.
 - [Nginx](https://nginx.org/) - Servidor HTTP e Proxy Reverso, servirá para manter tudo sob apenas um domínio/subdomínio (factup.me, aquisição vemos depois).
-- [DigitalOcean](https://www.digitalocean.com/) - VMs quase de graça para usar.
+- [Hostinger](https://www.hostinger.com.br/) - VMs naquele precinho.
 
 Back-end:
 
