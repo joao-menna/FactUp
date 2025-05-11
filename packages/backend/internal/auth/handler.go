@@ -133,7 +133,8 @@ func (ah *DefaultAuthHandler) LogInUserCallback(c *gin.Context) {
 
 	session := sessions.Default(c)
 	session.Set("userID", user.UserID)
-	session.Save()
+	err = session.Save()
+	utils.CheckGinError(err, c)
 
 	conn := ah.getConn(c)
 	defer conn.Release()
