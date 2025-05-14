@@ -18,7 +18,7 @@ Infraestrutura:
 - [Docker](https://www.docker.com/) - Conteinerizar a aplicação, para fácil manuseio e padronização de ambiente.
 - [Docker Compose](https://docs.docker.com/compose/) - Orquestração de Contêineres.
 - [Nginx](https://nginx.org/) - Servidor HTTP e Proxy Reverso, servirá para manter tudo sob apenas um domínio/subdomínio (factup.me, aquisição vemos depois).
-- [DigitalOcean](https://www.digitalocean.com/) - VMs quase de graça para usar.
+- [Hostinger](https://www.hostinger.com.br/) - VMs naquele precinho.
 
 Back-end:
 
@@ -36,14 +36,12 @@ Front-end:
 
 - SPA - Preferimos usar o formato SPA (single-page application) ao invés de SSR (server-side rendering) pois algumas coisas não funcionariam no formato SSR.
 - [TypeScript](https://www.typescriptlang.org/) - Linguagem de programação baseada no JavaScript, mas com tipos.
-- [Storybook](https://storybook.js.org/) - Desenvolver componentes isoladamente.
 - [Vite](https://vite.dev/) - Mais rápido app bundler no mercado.
 - [React](https://react.dev/) - Library para interfaces web de usuário.
 - [Radix UI](https://www.radix-ui.com/primitives) - Usado para os componentes mais elaborados.
 - [TailwindCSS](https://tailwindcss.com/) - Forma mais rápida e eficiente de criar CSS.
 - [React Router](https://reactrouter.com/) - Roteador de páginas para React.
 - [Tanstack Query](https://tanstack.com/query/latest) - Ferramenta de data-fetching e caching no client-side.
-- [React Slick](https://react-slick.neostack.com/) - Carrossel de elementos utilizado para o scroll da aplicação.
 
 Front-end (mobile):
 - Avaliar a criação de um front-end mobile em Flutter.

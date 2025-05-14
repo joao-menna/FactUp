@@ -1,12 +1,13 @@
 import { ProviderLoginButton } from "components/ProviderLoginButton";
+import { useNavigate, useSearchParams } from "react-router";
 import { LOGIN_PROVIDERS } from "constants/loginProviders";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
 import { Button } from "lib/components/Button";
 import { Card } from "lib/components/Card";
 import { useEffect } from "react";
 
 export function LoginPage() {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -23,7 +24,13 @@ export function LoginPage() {
 
   return (
     <div className="h-full flex flex-col items-center justify-center gap-4">
-      <h1 className="text-2xl text-text-100">{t("applicationName")}</h1>
+      {searchParams.get("banned") ? (
+        <Card>
+          <h3 className="text-xl text-text-100">{t("youAreBannedFromApp")}</h3>
+        </Card>
+      ) : (
+        <h1 className="text-2xl text-text-100">{t("applicationName")}</h1>
+      )}
 
       <p className="text-white">{t("logInWith")}</p>
 

@@ -5,3 +5,5 @@ export const FACTS = "facts";
 export const SAYINGS = "sayings";
 export const RANDOM = "random";
 export const INTERACTION = "interaction";
+export const REMAINING = "remaining";
+export const LIST = "list";

@@ -61,11 +61,18 @@ export function Sidebar() {
         <div className={clsx("flex flex-col items-center gap-2 p-2")}>
           <Button
             onClick={() => handleClickRoute("/")}
-            className={clsx("bg-primary-600 hover:bg-primary-600/80 w-full")}
+            className={clsx(
+              "bg-primary-600 hover:bg-primary-600/80 w-full flex justify-center"
+            )}
           >
-            <h1 className="text-text-100 text-2xl py-2 select-none">
+            {/* <h1 className="text-text-100 text-2xl py-2 select-none">
               {t("applicationName")}
-            </h1>
+            </h1> */}
+            <img
+              className={clsx("p-2")}
+              src="/logo.svg"
+              alt={t("applicationName")}
+            />
           </Button>
           <Button
             onClick={handleClickPost}

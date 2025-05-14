@@ -101,6 +101,20 @@ class PostService {
 
     return json;
   }
+
+  async remaining() {
+    const req = await fetch(`${this.baseUrl}/remaining`, {
+      credentials: "include",
+    });
+
+    if (req.status !== 200) {
+      throw new Error("could not get remaining post count");
+    }
+
+    const json = (await req.json()) as { remaining: number };
+
+    return json;
+  }
 }
 
 export const postService = new PostService();
