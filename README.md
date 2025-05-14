@@ -79,6 +79,20 @@ Front-end (mobile):
 - RNF004: O sistema deve possuir layout responsivo.
 - RNF005: O sistema deve usar TailwindCSS para a estilização.
 
+## Diagramas C4
+
+### Nível 1
+
+![nivel 1](docs/c4_level_1.png)
+
+### Nível 2
+
+![nivel 2](docs/c4_level_2.png)
+
+### Nível 3
+
+![nivel 3](docs/c4_level_3.png)
+
 ## Atividades
 
 - [X] (INFRA) Criar Dockerfile do Back-end.
