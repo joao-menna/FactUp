@@ -32,3 +32,6 @@ packages/backend/coverage
 
 # Sonar-Scanner
 .scannerwork
+
+# Certbot data
+data/
