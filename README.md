@@ -91,39 +91,6 @@ Front-end (mobile):
 
 ![nivel 3](docs/c4_level_3.png)
 
-## Atividades
-
-- [X] (INFRA) Criar Dockerfile do Back-end.
-- [X] (INFRA) Criar Dockerfile do Migrator.
-- [X] (INFRA) Criar docker-compose.yml com serviços necessários.
-- [ ] (INFRA) Criar CLIENT_ID e CLIENT_SECRET para login do usuário com Instagram.
-- [ ] (INFRA) Criar CLIENT_ID e CLIENT_SECRET para login do usuário com Facebook.
-- [ ] (INFRA) Criar CLIENT_ID e CLIENT_SECRET para login do usuário com Google.
-- [ ] (INFRA) Criar CLIENT_ID e CLIENT_SECRET para login do usuário com GitHub.
-- [X] (INFRA) Criar CLIENT_ID e CLIENT_SECRET para login do usuário com Discord.
-- [X] (MIGRATOR) Criar migrator simples.
-- [X] (BACK) Criar queries para o banco de dados.
-- [X] (BACK) Gerar o código que vai comunicar com o banco de dados pelo sqlc.
-- [X] (BACK) Testes unitários para utilitários.
-- [X] (BACK) Middleware de autorização
-- [X] (BACK) Endpoint GET de log in OAuth2 para a autenticação.
-- [X] (BACK) Endpoint GET de callback de log in OAuth2.
-- [X] (BACK) Endpoint GET de log out.
-- [X] (BACK) Endpoint GET para um post por ID.
-- [X] (BACK) Endpoint GET para múltiplos posts aleatórios.
-- [X] (BACK) Endpoint GET para múltiplos posts de um usuário.
-- [X] (BACK) Endpoint POST protegido para inserir um post.
-- [X] (BACK) Endpoint DELETE protegido para deletar um post por ID (deve ser o autor do post ou o admin).
-- [X] (BACK) Endpoint de servidor estático para as imagens.
-- [X] (BACK) Endpoint POST de upload de imagens.
-- [X] (BACK) Endpoint POST de adicionar interação com post.
-- [X] (BACK) Endpoint DELETE de remover interação com post.
-- [X] (BACK) Fazer os endpoints de posts retornarem o score deles.
-- [ ] (FRONT) Criar página de login.
-- [ ] (FRONT) Criar página com scroll infinito estilo tiktok (de 3 em 3 fatos) para os fatos.
-- [ ] (FRONT) Criar página de editar Display Name.
-- [ ] (FRONT) Criar página de criar fato.
-
 ## Comandos recorrentes
 
 - [gocyclo](https://github.com/fzipp/gocyclo) - `gocyclo .` - complexidade ciclomática

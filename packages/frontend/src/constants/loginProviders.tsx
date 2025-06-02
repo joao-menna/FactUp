@@ -1,11 +1,5 @@
 import { ReactNode } from "react";
-import {
-  FaDiscord,
-  FaFacebook,
-  FaGithub,
-  FaGoogle,
-  FaInstagram,
-} from "react-icons/fa";
+import { FaDiscord, FaGithub, FaGoogle } from "react-icons/fa";
 
 interface LoginProvider {
   provider: string;
@@ -19,11 +13,11 @@ export const LOGIN_PROVIDERS: LoginProvider[] = [
     icon: <FaDiscord />,
     bgClassName: "bg-[#5865F240]",
   },
-  {
-    provider: "Facebook",
-    icon: <FaFacebook />,
-    bgClassName: "bg-[#1877F240]",
-  },
+  // {
+  //   provider: "Facebook",
+  //   icon: <FaFacebook />,
+  //   bgClassName: "bg-[#1877F240]",
+  // },
   {
     provider: "GitHub",
     icon: <FaGithub />,
@@ -34,9 +28,9 @@ export const LOGIN_PROVIDERS: LoginProvider[] = [
     icon: <FaGoogle />,
     bgClassName: "bg-[#E3362940]",
   },
-  {
-    provider: "Instagram",
-    icon: <FaInstagram />,
-    bgClassName: "bg-[#EE4C5E40]",
-  },
+  // {
+  //   provider: "Instagram",
+  //   icon: <FaInstagram />,
+  //   bgClassName: "bg-[#EE4C5E40]",
+  // },
 ];

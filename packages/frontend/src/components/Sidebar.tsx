@@ -97,6 +97,14 @@ export function Sidebar() {
           >
             {t("sayings")}
           </Button>
+          <Button
+            onClick={() => handleClickRoute("/about")}
+            className={clsx(
+              "bg-primary-600 hover:bg-primary-600/80 w-full py-2"
+            )}
+          >
+            {t("about")}
+          </Button>
         </div>
         <SidebarBottom />
       </div>

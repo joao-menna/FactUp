@@ -37,5 +37,7 @@
   "itsJoking": "It's joking!",
   "imageTooLarge": "Image too large!",
   "youAreBannedFromApp": "You are banned from FactUp!",
-  "anInternalErrorHasOccurred": "An internal error has occurred!"
+  "anInternalErrorHasOccurred": "An internal error has occurred!",
+  "about": "About",
+  "aboutPageText": "FactUp is a social media created in Brazil, made open-source from it's beginning! Enter our GitHub repository:"
 }

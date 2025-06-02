@@ -3,6 +3,7 @@ import { SendPostPage } from "pages/SendPost";
 import { RouteObject } from "react-router";
 import { HomePage } from "pages/Home";
 import { PostPage } from "pages/Post";
+import { AboutPage } from "pages/About";
 
 export const mainRoutes: RouteObject[] = [
   {
@@ -38,5 +39,9 @@ export const mainRoutes: RouteObject[] = [
   {
     path: "sayings",
     element: <PostListPage type="saying" />,
+  },
+  {
+    path: "about",
+    element: <AboutPage />,
   },
 ];

@@ -37,5 +37,7 @@
   "itsJoking": "É piada!",
   "imageTooLarge": "Imagem grande demais!",
   "youAreBannedFromApp": "Você está banido do FactUp!",
-  "anInternalErrorHasOccurred": "Um erro interno ocorreu!"
+  "anInternalErrorHasOccurred": "Um erro interno ocorreu!",
+  "about": "Sobre",
+  "aboutPageText": "FactUp é uma rede social criada no Brasil, feito open-source desde suas origens! Entre em nosso repositório GitHub:"
 }

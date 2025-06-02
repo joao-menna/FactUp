@@ -7,10 +7,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/providers/discord"
-	"github.com/markbates/goth/providers/facebook"
 	"github.com/markbates/goth/providers/github"
 	"github.com/markbates/goth/providers/google"
-	"github.com/markbates/goth/providers/instagram"
 )
 
 const (
@@ -28,8 +26,8 @@ func Routes(g *gin.Engine, dbPool *pgxpool.Pool) {
 		discord.New(ep.GetProviderClientId(discordProvider), ep.GetProviderClientSecret(discordProvider), ep.GetProviderCallbackUrl(discordProvider)),
 		github.New(ep.GetProviderClientId(githubProvider), ep.GetProviderClientSecret(githubProvider), ep.GetProviderCallbackUrl(githubProvider)),
 		google.New(ep.GetProviderClientId(googleProvider), ep.GetProviderClientSecret(googleProvider), ep.GetProviderCallbackUrl(googleProvider)),
-		facebook.New(ep.GetProviderClientId(facebookProvider), ep.GetProviderClientSecret(facebookProvider), ep.GetProviderCallbackUrl(facebookProvider)),
-		instagram.New(ep.GetProviderClientId(instagramProvider), ep.GetProviderClientSecret(instagramProvider), ep.GetProviderCallbackUrl(instagramProvider)),
+		// facebook.New(ep.GetProviderClientId(facebookProvider), ep.GetProviderClientSecret(facebookProvider), ep.GetProviderCallbackUrl(facebookProvider)),
+		// instagram.New(ep.GetProviderClientId(instagramProvider), ep.GetProviderClientSecret(instagramProvider), ep.GetProviderCallbackUrl(instagramProvider)),
 	)
 
 	r := g.Group("/api/v1/auth")
