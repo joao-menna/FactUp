@@ -25,6 +25,7 @@ export default {
     try {
       const req = await fetch(url, {
         method: "DELETE",
+        redirect: "follow",
         headers: { authorization: process.env.DCMODDER_BACKEND_TOKEN ?? "" },
       });
 

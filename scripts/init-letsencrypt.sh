@@ -7,7 +7,7 @@ fi
 
 cd ./..
 
-domains=(factup.com.br) # factup.me)
+domains=(factup.com.br factup.me)
 rsa_key_size=4096
 data_path="./data/certbot"
 email="" # Adding a valid address is strongly recommended
@@ -30,8 +30,8 @@ if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/
 fi
 
 echo "### Creating dummy certificate for $domains ..."
-path="/etc/letsencrypt/live/$domains"
-mkdir -p "$data_path/conf/live/$domains"
+path="/etc/letsencrypt/live/${domains[0]}"
+mkdir -p "$data_path/conf/live/${domains[0]}"
 docker compose -f docker-compose.prod.yml run --rm --entrypoint "\
   openssl req -x509 -nodes -newkey rsa:$rsa_key_size -days 1\
     -keyout '$path/privkey.pem' \
@@ -46,9 +46,9 @@ echo
 
 echo "### Deleting dummy certificate for $domains ..."
 docker compose -f docker-compose.prod.yml run --rm --entrypoint "\
-  rm -Rf /etc/letsencrypt/live/$domains && \
-  rm -Rf /etc/letsencrypt/archive/$domains && \
-  rm -Rf /etc/letsencrypt/renewal/$domains.conf" certbot
+  rm -Rf /etc/letsencrypt/live/${domains[0]} && \
+  rm -Rf /etc/letsencrypt/archive/${domains[0]} && \
+  rm -Rf /etc/letsencrypt/renewal/${domains[0]}.conf" certbot
 echo
 
 
