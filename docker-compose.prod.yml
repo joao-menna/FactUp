@@ -12,7 +12,7 @@ services:
     container_name: factup_proxy
     image: nginx:latest
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-    restart: always
+    restart: unless-stopped
     ports:
       - 80:80
       - 443:443
@@ -32,7 +32,7 @@ services:
   postgres:
     container_name: factup_postgres
     image: postgres:17
-    restart: always
+    restart: unless-stopped
     environment:
       - POSTGRES_DB=factup
       - POSTGRES_USER=postgres
@@ -71,7 +71,7 @@ services:
 
   backend:
     container_name: factup_backend
-    restart: always
+    restart: unless-stopped
     build:
       context: ./packages/backend
       dockerfile: Dockerfile
@@ -92,7 +92,7 @@ services:
 
   dcmodder:
     container_name: factup_dcmodder
-    restart: always
+    restart: unless-stopped
     build:
       context: ./packages/dcmodder
       dockerfile: Dockerfile
